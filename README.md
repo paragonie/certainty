@@ -61,6 +61,8 @@ Then, make sure your HTTP library is using the cacert path provided. For example
 
 $ch = curl_init();
 //  ... snip ...
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 curl_setopt($ch, CURLOPT_CAINFO, '/path/to/cacert.perm');
 ``` 
 
