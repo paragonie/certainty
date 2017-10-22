@@ -39,7 +39,13 @@ their certificates are revoked, you don't want to continue trusting these certif
 
 ## What Certainty Does
 
-Certainty maintains a repository of all the `cacert.pem` files, along with a 
+Certainty maintains a repository of all the `cacert.pem` files since 2017, along with a sha256sum and
+Ed25519 signature of each file. When you request the latest bundle, Certainty will check both these
+values (the latter can only be signed by a key held by Paragon Initiative Enterprises, LLC) for each
+entry in the JSON value, and return the latest bundle that passes validation. This prevents sneaky
+additions of unauthorized CA certificates.
+
+The cacert.pem files contained within are [reproducible from the Mozilla's bundle](https://curl.haxx.se/docs/mk-ca-bundle.html).
 
 ## Using Certainty
 
