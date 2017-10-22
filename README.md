@@ -49,6 +49,22 @@ The cacert.pem files contained within are [reproducible from the Mozilla's bundl
 
 ## Using Certainty
 
+### Getting the Path to the Latest CACert Bundle at Run-Time
+
+You can just fetch the latest bundle's path at runtime. For example, using cURL:
+
+```php
+<?php
+$latestBundle = (new \ParagonIE\Certainty\Fetch())
+    ->getLatestBundle();
+
+$ch = curl_init();
+//  ... snip ...
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+curl_setopt($ch, CURLOPT_CAINFO, $latestBundle->getFilePath());
+``` 
+
 ### Create Symlink to Latest CACert
 
 After running `composer update`, simply run a script that excecutes the following.
@@ -60,7 +76,7 @@ After running `composer update`, simply run a script that excecutes the followin
     ->createSymlink('/path/to/cacert.pem');
 ```
 
-Then, make sure your HTTP library is using the cacert path provided. For example, using cURL:
+Then, make sure your HTTP library is using the cacert path provided.
 
 ```php
 <?php
@@ -72,3 +88,5 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 curl_setopt($ch, CURLOPT_CAINFO, '/path/to/cacert.perm');
 ``` 
 
+This approach is useful if you're using at third-party library that expects a cacert.pem file at
+a hard-coded location. However, you should **prefer** the first approach. 
