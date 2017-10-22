@@ -1,0 +1,27 @@
+{
+  "name": "paragonie/certainty",
+  "description": "Up-to-date, verifiable repository for Certificate Authorities",
+  "keywords": ["CA", "Certificate Authority", "CA-Cert", "CACert", "cacert.pem", "ca-cert.pem", "PKI", "TLS", "SSL", "Public-Key Infractructure", "Ed25519"],
+  "license": "ISC",
+  "authors": [
+    {
+      "name": "Paragon Initiative Enterprises",
+      "email": "security@paragonie.com",
+      "homepage": "https://paragonie.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ParagonIE\\Certainty\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^5.6|^7",
+    "paragonie/constant_time_encoding": "^1|^2",
+    "paragonie/sodium_compat": "^1.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6",
+    "vimeo/psalm": "^0|^1"
+  }
+}

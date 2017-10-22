@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2017-09-20",
+    "file": "cacert-2017-09-20.pem",
+    "sha256": "435ac8e816f5c10eaaf228d618445811c16a5e842e461cb087642b6265a36856",
+    "signature": "9007f7f0411d6d1f1f5136b247375e614a24216e4fc6c9d6d12642f986f3d45cea3daa2a19705579845a37488ce679f78a1b890d24da6157a2e9894d351fa70a"
+  },
+  {
+    "date": "2017-06-07",
+    "file": "cacert-2017-06-07.pem",
+    "sha256": "e78c8ab7b4432bd466e64bb942d988f6c0ac91cd785017e465bdc96d42fe9dd0",
+    "signature": "ed1fc6af6827cac04da6caf40deffeadc2a19feba5281d7cf92d1563ad9af49b8d25bf459e5d5acec0fe723394f88f240d4b716e52f3835f9ab3caa3cc85380e"
+  },
+  {
+    "date": "2017-01-18",
+    "file": "cacert-2017-01-18.pem",
+    "sha256": "e62a07e61e5870effa81b430e1900778943c228bd7da1259dd6a955ee2262b47",
+    "signature": "0f217f29c9711cd74ed60f0f6da886c166969945546a6e75e6fa8cf5ea87387f5fce1e1ced71af46095d2dd411a3676ec1aa40927cc0d47a91adaeef965b240b"
+  },
+  {
+    "date": "2016-11-02",
+    "file": "cacert-2016-11-02.pem",
+    "sha256": "cc7c9e2d259e20b72634371b146faec98df150d18dd9da9ad6ef0b2deac2a9d3",
+    "signature": "59687e4a471591fd09f2e9d84a595fd37618eadf0c4a3eef56feaca10100a175da520dbd068473189af3775ca91e1f48eb55155accb9d5c6137d25b6a9e93103"
+  }
+]
