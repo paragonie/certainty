@@ -24,7 +24,7 @@ class Validator
 
     /**
      * @param Bundle $bundle  Which bundle to validate
-     * @param bool $backupKey Use the backup key? (Only if the primary is compromsied.)
+     * @param bool $backupKey Use the backup key? (Only if the primary is compromised.)
      * @return bool
      */
     public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
