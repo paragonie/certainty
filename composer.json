@@ -15,6 +15,11 @@
       "ParagonIE\\Certainty\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "ParagonIE\\Certainty\\Tests\\": "test/"
+    }
+  },
   "require": {
     "php": "^5.6|^7",
     "paragonie/constant_time_encoding": "^1|^2",
