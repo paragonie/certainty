@@ -42,8 +42,13 @@ class RemoteFetch extends Fetch
         $this->url = $url;
 
         if (\is_null($http)) {
-            /** @var Client $http */
-            $http = new Client();
+            if (\file_exists($this->dataDirectory . '/ca-certs.json')) {
+                $http = new Client([
+                    'verify' => (new Fetch($this->dataDirectory))->getLatestBundle()->getFilePath()
+                ]);
+            } else {
+                $http = new Client();
+            }
         }
         /** @var Client $http */
         $this->http = $http;
