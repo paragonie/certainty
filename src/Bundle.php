@@ -38,7 +38,7 @@ class Bundle
     }
 
     /**
-     * Create a symbolic link that poinst to this bundle?
+     * Create a symbolic link that points to this bundle?
      *
      * @param string $destination
      * @param bool $unlinkIfExists
