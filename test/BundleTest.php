@@ -16,6 +16,13 @@ class BundleTest extends TestCase
         $this->link = __DIR__ . '/static/symlink-test';
     }
 
+    public function tearDown()
+    {
+        if (\file_exists($this->link)) {
+            \unlink($this->link);
+        }
+    }
+
     /**
      * @covers Bundle::createSymlink()
      */
