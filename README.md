@@ -16,7 +16,7 @@ Many HTTP libraries require you to specify a file path to a `cacert.pem` file in
 Omitting this file means either disabling certificate validation entirely (which enables trivial man-in-the-middle
 exploits), connection failures, or hoping that your library falls back safely to the operating system's bundle.
 
-In short, the possible outcomes are (from best to worst) are as follows:
+In short, the possible outcomes (from best to worst) are as follows:
 
 1. Specify a cacert file, and you get to enjoy TLS as it was intended. (Secure.)
 2. Omit a cacert file, and the OS maybe bails you out. (Uncertain.)
@@ -45,7 +45,7 @@ values (the latter can only be signed by a key held by Paragon Initiative Enterp
 entry in the JSON value, and return the latest bundle that passes validation. This prevents sneaky
 additions of unauthorized CA certificates.
 
-The cacert.pem files contained within are [reproducible from the Mozilla's bundle](https://curl.haxx.se/docs/mk-ca-bundle.html).
+The cacert.pem files contained within are [reproducible from Mozilla's bundle](https://curl.haxx.se/docs/mk-ca-bundle.html).
 
 ## Using Certainty
 
@@ -67,7 +67,7 @@ curl_setopt($ch, CURLOPT_CAINFO, $latestBundle->getFilePath());
 
 ### Create Symlink to Latest CACert
 
-After running `composer update`, simply run a script that excecutes the following.
+After running `composer update`, simply run a script that executes the following.
 
 ```php
 <?php
