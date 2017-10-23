@@ -1,0 +1,11 @@
+#!/usr/bin/php
+<?php
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+if ($argc < 2) {
+    die('Usage: vendor/bin/certainty-cert-symlink /path/to/desired/cacert.pem' . "\n");
+}
+
+(new \ParagonIE\Certainty\RemoteFetch())
+    ->getLatestBundle()
+    ->createSymlink($argv[1], true);
