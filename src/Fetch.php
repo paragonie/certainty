@@ -29,8 +29,14 @@ class Fetch
      */
     public function getLatestBundle()
     {
+        /** @var Bundle $bundle */
         foreach ($this->listBundles() as $bundle) {
-            if (Validator::checkSha256Sum($bundle) && Validator::checkEd25519Signature($bundle)) {
+            if ($bundle->hasCustom()) {
+                $validator = $bundle->getValidator();
+                if ($validator::checkSha256Sum($bundle) && $validator::checkEd25519Signature($bundle)) {
+                    return $bundle;
+                }
+            } elseif (Validator::checkSha256Sum($bundle) && Validator::checkEd25519Signature($bundle)) {
                 return $bundle;
             }
         }
@@ -38,18 +44,22 @@ class Fetch
     }
 
     /**
+     * @param string $customValidator
      * @return array<int, Bundle>
      */
-    public function getAllBundles()
+    public function getAllBundles($customValidator = '')
     {
-        return \array_values($this->listBundles());
+        return \array_values($this->listBundles($customValidator));
     }
 
     /**
+     * List bundles
+     *
+     * @param string $customValidator
      * @return array<int, Bundle>
      * @throws \Exception
      */
-    protected function listBundles()
+    protected function listBundles($customValidator = '')
     {
         if (!\file_exists($this->dataDirectory . '/ca-certs.json')) {
             throw new \Exception('ca-certs.json not found in data directory.');
@@ -71,11 +81,15 @@ class Fetch
                 // No
                 continue;
             }
-            $key = (int) (\preg_replace('/[^0-9]/', '', $row['date']));
+            $key = (int) (\preg_replace('/[^0-9]/', '', $row['date']) . '0000');
+            while (isset($bundles[$key])) {
+                ++$key;
+            }
             $bundles[$key] = new Bundle(
                 $this->dataDirectory . '/' . $row['file'],
                 $row['sha256'],
-                $row['signature']
+                $row['signature'],
+                !empty($row['custom']) ? $row['custom'] : $customValidator
             );
         }
         \krsort($bundles);

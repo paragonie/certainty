@@ -12,6 +12,9 @@ use ParagonIE\ConstantTime\Hex;
  */
 class Bundle
 {
+    /** @var Validator $customValidator */
+    protected $customValidator;
+
     /** @var string $filePath */
     protected $filePath = '';
 
@@ -23,18 +26,32 @@ class Bundle
 
     /**
      * Bundle constructor.
+     *
      * @param string $filePath
      * @param string $sha256sum
      * @param string $signature
+     * @param string $customValidator
+     * @throws \TypeError
      */
     public function __construct(
         $filePath = '',
         $sha256sum = '',
-        $signature = ''
+        $signature = '',
+        $customValidator = ''
     ) {
         $this->filePath = $filePath;
         $this->sha256sum = $sha256sum;
         $this->signature = $signature;
+        $newClass = new Validator();
+        if (!empty($customValidator)) {
+            if (\class_exists($customValidator)) {
+                $newClass = new $customValidator();
+                if (!($newClass instanceof Validator)) {
+                    throw new \TypeError('Invalid validator class');
+                }
+            }
+        }
+        $this->customValidator = $newClass;
     }
 
     /**
@@ -87,5 +104,25 @@ class Bundle
             return Hex::decode($this->signature);
         }
         return $this->signature;
+    }
+
+    /**
+     * @return Validator
+     * @throws \Exception
+     */
+    public function getValidator()
+    {
+        if (!isset($this->customValidator)) {
+            throw new \Exception('Custom class not defined');
+        }
+        return $this->customValidator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCustom()
+    {
+        return !empty($this->customValidator);
     }
 }
