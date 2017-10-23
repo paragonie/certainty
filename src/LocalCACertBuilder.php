@@ -40,12 +40,13 @@ class LocalCACertBuilder extends Bundle
      */
     public static function fromBundle(Bundle $old)
     {
-        return new static(
+        $new = new static(
             $old->getFilePath(),
             $old->getSha256Sum(),
-            $old->getSignature(),
-            $old->getValidator()
+            $old->getSignature()
         );
+        $new->customValidator = $old->getValidator();
+        return $new;
     }
 
     /**
@@ -54,6 +55,7 @@ class LocalCACertBuilder extends Bundle
      */
     public function loadOriginal()
     {
+        /** @var string original */
         $this->original = \file_get_contents($this->filePath);
         if (!\is_string($this->original)) {
             throw new \Exception('Could not read contents of CACert file provided.');
@@ -113,14 +115,16 @@ class LocalCACertBuilder extends Bundle
         if (!$this->outputPem) {
             throw new \Exception('No output file path for combined certificates specified.');
         }
+        /** @var string $return */
         $return = \file_put_contents($this->outputPem, $this->contents);
-        if (\is_bool($return)) {
+        if (!\is_int($return)) {
             throw new \Exception('Could not save PEM file.');
         }
         $sha256sum = \hash('sha256', $this->contents);
         $signature = \ParagonIE_Sodium_Compat::crypto_sign_detached($this->contents, $this->secretKey);
 
         if (\file_exists($this->outputJson)) {
+            /** @var string $fileData */
             $fileData = \file_get_contents($this->outputJson);
             $json = \json_decode($fileData, true);
             if (!\is_array($json)) {
@@ -133,7 +137,7 @@ class LocalCACertBuilder extends Bundle
 
         // Put at the front of the array
         \array_unshift($json, [
-            'custom' => $this->customValidatorClass,
+            'custom' => \get_class($this->customValidator),
             'date' => \date('Y-m-d'),
             'file' => \array_pop($pieces),
             'sha256' => $sha256sum,
@@ -153,10 +157,17 @@ class LocalCACertBuilder extends Bundle
     /**
      * @param string $string
      * @return self
+     * @throws \TypeError
      */
     public function setCustomValidator($string = '')
     {
-        $this->customValidatorClass = $string;
+        if (\class_exists($string)) {
+            $newClass = new $string();
+            if (!($newClass instanceof Validator)) {
+                throw new \TypeError('Invalid validator class');
+            }
+            $this->customValidator = $newClass;
+        }
         return $this;
     }
 

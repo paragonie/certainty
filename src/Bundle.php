@@ -12,8 +12,8 @@ use ParagonIE\ConstantTime\Hex;
  */
 class Bundle
 {
-    /** @var Validator|null $customValidatorClass */
-    protected $customValidatorClass = '';
+    /** @var Validator $customValidator */
+    protected $customValidator;
 
     /** @var string $filePath */
     protected $filePath = '';
@@ -30,22 +30,27 @@ class Bundle
      * @param string $filePath
      * @param string $sha256sum
      * @param string $signature
-     * @param string $customValidatorClass
+     * @param string $customValidator
      */
     public function __construct(
         $filePath = '',
         $sha256sum = '',
         $signature = '',
-        $customValidatorClass = ''
+        $customValidator = ''
     ) {
         $this->filePath = $filePath;
         $this->sha256sum = $sha256sum;
         $this->signature = $signature;
-        if (!empty($customValidatorClass)) {
-            if (\class_exists($customValidatorClass)) {
-                $this->customValidatorClass = new $customValidatorClass();
+        $newClass = new Validator();
+        if (!empty($customValidator)) {
+            if (\class_exists($customValidator)) {
+                $newClass = new $customValidator();
+                if (!($newClass instanceof Validator)) {
+                    throw new \TypeError('Invalid validator class');
+                }
             }
         }
+        $this->customValidator = $newClass;
     }
 
     /**
@@ -106,10 +111,10 @@ class Bundle
      */
     public function getValidator()
     {
-        if (!isset($this->customValidatorClass)) {
+        if (!isset($this->customValidator)) {
             throw new \Exception('Custom class not defined');
         }
-        return $this->customValidatorClass;
+        return $this->customValidator;
     }
 
     /**
@@ -117,6 +122,6 @@ class Bundle
      */
     public function hasCustom()
     {
-        return !empty($this->customValidatorClass);
+        return !empty($this->customValidator);
     }
 }
