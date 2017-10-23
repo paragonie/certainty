@@ -31,6 +31,7 @@ class Bundle
      * @param string $sha256sum
      * @param string $signature
      * @param string $customValidator
+     * @throws \TypeError
      */
     public function __construct(
         $filePath = '',
