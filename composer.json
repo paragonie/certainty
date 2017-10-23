@@ -20,6 +20,9 @@
       "ParagonIE\\Certainty\\Tests\\": "test/"
     }
   },
+  "bin": [
+    "bin/certainty-cert-symlink"
+  ],
   "require": {
     "php": "^5.6|^7",
     "guzzlehttp/guzzle": "^6",
