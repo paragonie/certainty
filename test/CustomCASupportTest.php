@@ -13,6 +13,12 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomCASupportTest extends TestCase
 {
+    public function tearDown()
+    {
+        \unlink(__DIR__ . '/static/combined.pem');
+        \unlink(__DIR__ . '/static/ca-certs.json');
+    }
+
     /**
      * @covers CustomValidator
      */
