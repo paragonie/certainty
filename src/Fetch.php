@@ -7,6 +7,8 @@ namespace ParagonIE\Certainty;
  */
 class Fetch
 {
+    const CHECK_SIGNATURE_BY_DEFAULT = false;
+
     /** @var string $dataDirectory */
     protected $dataDirectory = '';
 
@@ -24,20 +26,32 @@ class Fetch
     }
 
     /**
+     * @param bool|null $checkEd25519Signature
      * @return Bundle
      * @throws \Exception
      */
-    public function getLatestBundle()
+    public function getLatestBundle($checkEd25519Signature = null)
     {
+        if (\is_null($checkEd25519Signature)) {
+            $checkEd25519Signature = (bool) static::CHECK_SIGNATURE_BY_DEFAULT;
+        }
         /** @var Bundle $bundle */
         foreach ($this->listBundles() as $bundle) {
             if ($bundle->hasCustom()) {
                 $validator = $bundle->getValidator();
-                if ($validator::checkSha256Sum($bundle) && $validator::checkEd25519Signature($bundle)) {
+                if ($validator::checkSha256Sum($bundle)) {
+                    if (!$checkEd25519Signature) {
+                        return $bundle;
+                    } elseif ($validator::checkEd25519Signature($bundle)) {
+                        return $bundle;
+                    }
+                }
+            } elseif (Validator::checkSha256Sum($bundle)) {
+                if (!$checkEd25519Signature) {
+                    return $bundle;
+                } elseif (Validator::checkEd25519Signature($bundle)) {
                     return $bundle;
                 }
-            } elseif (Validator::checkSha256Sum($bundle) && Validator::checkEd25519Signature($bundle)) {
-                return $bundle;
             }
         }
         throw new \Exception('No valid bundles were found in the data directory.');

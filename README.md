@@ -7,6 +7,7 @@
 [![Downloads](https://img.shields.io/packagist/dt/paragonie/certainty.svg)](https://packagist.org/packages/paragonie/certainty)
 
 Automate your PHP projects' cacert.pem management.
+[Read the blog post introducing Certainty](https://paragonie.com/blog/2017/10/certainty-automated-cacert-pem-management-for-php-software).
 
 **Requires PHP 5.6 or newer.**
 
@@ -43,7 +44,7 @@ Certainty maintains a repository of all the `cacert.pem` files since 2017, along
 Ed25519 signature of each file. When you request the latest bundle, Certainty will check both these
 values (the latter can only be signed by a key held by Paragon Initiative Enterprises, LLC) for each
 entry in the JSON value, and return the latest bundle that passes validation. This prevents sneaky
-additions of unauthorized CA certificates.
+additions of unauthorized CA certificates from escaping detection.
 
 The cacert.pem files contained within are [reproducible from Mozilla's bundle](https://curl.haxx.se/docs/mk-ca-bundle.html).
 

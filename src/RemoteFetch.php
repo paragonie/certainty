@@ -12,6 +12,7 @@ use GuzzleHttp\Client;
  */
 class RemoteFetch extends Fetch
 {
+    const CHECK_SIGNATURE_BY_DEFAULT = true;
     const DEFAULT_URL = 'https://raw.githubusercontent.com/paragonie/certainty/master/data/';
 
     /** @var \DateInterval */
