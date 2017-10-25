@@ -38,11 +38,15 @@ composer require paragonie/certainty:^0|^1
 When we are satisfied with a stable `v1` release, you should drop the `^0|` part of your
 version constraints.
 
-If you are not using [`RemoteFetch`](docs/features/RemoteFetch.md), you want to use `dev-master`
-rather than a version constraint, due to the nature of CA Certificates. If a major CA gets
-compromised and their certificates are revoked, you don't want to continue trusting these
-certificates. Furthermore, you should be running `composer update` at least once per week
-to prevent stale CA-Cert files from causing issues.
+Certainty will keep certificates up to date via `RemoteFetch`, so using a stable API is fine.
+
+If you are not using [`RemoteFetch`](docs/features/RemoteFetch.md) (which is strongly recommended
+thst you do), then you want to use `dev-master` rather than a version constraint, due to the nature
+of CA Certificates. If a major CA gets compromised and their certificates are revoked, you don't
+want to continue trusting these certificates.
+
+Furthermore, in the event of avoiding `RemoteFetch`, you should be running `composer update` at least
+once per week to prevent stale CA-Cert files from causing issues.
 
 ## What Certainty Does
 
