@@ -13,6 +13,8 @@ class Validator
     const BACKUP_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
 
     /**
+     * Validate SHA256 checksums.
+     *
      * @param Bundle $bundle
      * @return bool
      */
@@ -23,6 +25,8 @@ class Validator
     }
 
     /**
+     * Check Ed25519 signature for this bundle's contents.
+     *
      * @param Bundle $bundle  Which bundle to validate
      * @param bool $backupKey Use the backup key? (Only if the primary is compromised.)
      * @return bool

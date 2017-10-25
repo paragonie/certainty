@@ -68,6 +68,8 @@ class RemoteFetch extends Fetch
     }
 
     /**
+     * Do we need to fetch updates?
+     *
      * @return bool
      */
     public function cacheExpired()
@@ -102,6 +104,8 @@ class RemoteFetch extends Fetch
     }
 
     /**
+     * This handles the actual HTTP request.
+     *
      * @return bool
      * @throws \Exception
      */
@@ -153,6 +157,18 @@ class RemoteFetch extends Fetch
     public function setCacheTimeout(\DateInterval $interval)
     {
         $this->cacheTimeout = $interval;
+        return $this;
+    }
+
+    /**
+     * Replace the HTTP client with a new one.
+     *
+     * @param Client $client
+     * @return $this
+     */
+    public function setHttpClient(Client $client)
+    {
+        $this->http = $client;
         return $this;
     }
 

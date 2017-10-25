@@ -50,6 +50,8 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Load the original bundle's contents.
+     *
      * @return self
      * @throws \Exception
      */
@@ -64,6 +66,9 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Append a CACert file, containing your in-house certificates, to the bundle
+     * being compiled.
+     *
      * @param string $path
      * @return self
      * @throws \Exception
@@ -85,6 +90,8 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Get the public key.
+     *
      * @param bool $raw
      * @return string
      * @throws \Error
@@ -101,6 +108,8 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Sign and save the combined CA-Cert file.
+     *
      * @throws \Exception
      * @return bool
      */
@@ -155,6 +164,9 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Specify the fully qualified class name for your custom
+     * Validator class.
+     *
      * @param string $string
      * @return self
      * @throws \TypeError
@@ -172,6 +184,9 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Specify the full path of the file that the combined CA-cert will be
+     * written to when save() is invoked.
+     *
      * @param string $string
      * @return self
      */
@@ -182,6 +197,9 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Specify the full path of the file that will contain the updated
+     * sha256/Ed25519 metadata.
+     *
      * @param string $string
      * @return self
      */
@@ -192,12 +210,35 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Specify the signing key to be used.
+     *
      * @param string $secretKey
      * @return self
+     * @throws \Exception
      */
     public function setSigningKey($secretKey = '')
     {
+        // Handle hex-encoded strings.
+        if (\ParagonIE_Sodium_Core_Util::substr($secretKey) === 128) {
+            /** @var string $secretKey */
+            $secretKey = Hex::decode($secretKey);
+            if (!\is_string($secretKey)) {
+                throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
+            }
+        } elseif (\ParagonIE_Sodium_Core_Util::substr($secretKey) !== 64) {
+            throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
+        }
         $this->secretKey = $secretKey;
         return $this;
+    }
+
+    /**
+     * Don't leak secret keys.
+     *
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        return [];
     }
 }

@@ -14,6 +14,9 @@ class Fetch
 
     /**
      * Fetch constructor.
+     *
+     * You almost certainly want to use RemoteFetch instead.
+     *
      * @param string $dataDir
      */
     public function __construct($dataDir = '')
@@ -26,6 +29,9 @@ class Fetch
     }
 
     /**
+     * Get the latest bundle. Checks the SHA256 hash of the file versus what
+     * is expected. Optionally checks the Ed25519 signature.
+     *
      * @param bool|null $checkEd25519Signature
      * @return Bundle
      * @throws \Exception
@@ -58,6 +64,10 @@ class Fetch
     }
 
     /**
+     * Get an array of all of the Bundles, ordered most-recent to oldest.
+     *
+     * No validation is perforemd automatically.
+     *
      * @param string $customValidator
      * @return array<int, Bundle>
      */

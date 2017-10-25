@@ -27,10 +27,10 @@ class Bundle
     /**
      * Bundle constructor.
      *
-     * @param string $filePath
-     * @param string $sha256sum
-     * @param string $signature
-     * @param string $customValidator
+     * @param string $filePath        Path to the CACert bundle
+     * @param string $sha256sum       Hex-encoded string
+     * @param string $signature       Hex-encoded string
+     * @param string $customValidator Fully-Qualified Class Name
      * @throws \TypeError
      */
     public function __construct(
@@ -55,7 +55,7 @@ class Bundle
     }
 
     /**
-     * Create a symbolic link that points to this bundle?
+     * Creates a symbolic link that points to this bundle.
      *
      * @param string $destination
      * @param bool $unlinkIfExists
@@ -83,6 +83,9 @@ class Bundle
     }
 
     /**
+     * Get the SHA256 hash of this bundle's contents. Defaults
+     * to returning a hex-encoded string.
+     *
      * @param bool $raw
      * @return string
      */
@@ -95,6 +98,9 @@ class Bundle
     }
 
     /**
+     * Get the Ed25519 signature for this bundle. Defaults
+     * to returning a hex-encoded string.
+     *
      * @param bool $raw
      * @return string
      */
@@ -107,6 +113,8 @@ class Bundle
     }
 
     /**
+     * Get the custom validator (assuming one is defined).
+     *
      * @return Validator
      * @throws \Exception
      */
@@ -119,6 +127,9 @@ class Bundle
     }
 
     /**
+     * Does this Bundle need a custom validator? This is typically only true
+     * if a custom CA cert is being employed in addition to the Mozilla bundles.
+     *
      * @return bool
      */
     public function hasCustom()
