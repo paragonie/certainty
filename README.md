@@ -32,62 +32,35 @@ source projects do this.
 From Composer:
 
 ```bash
-composer require paragonie/certainty:dev-master
+composer require paragonie/certainty:^0|^1
 ```
 
-Due to the nature of CA Certificates, you want to use `dev-master`. If a major CA gets compromised and
-their certificates are revoked, you don't want to continue trusting these certificates.
+When we are satisfied with a stable `v1` release, you should drop the `^0|` part of your
+version constraints.
+
+If you are not using [`RemoteFetch`](docs/features/RemoteFetch.md), you want to use `dev-master`
+rather than a version constraint, due to the nature of CA Certificates. If a major CA gets
+compromised and their certificates are revoked, you don't want to continue trusting these
+certificates. Furthermore, you should be running `composer update` at least once per week
+to prevent stale CA-Cert files from causing issues.
 
 ## What Certainty Does
 
 Certainty maintains a repository of all the `cacert.pem` files since 2017, along with a sha256sum and
 Ed25519 signature of each file. When you request the latest bundle, Certainty will check both these
 values (the latter can only be signed by a key held by Paragon Initiative Enterprises, LLC) for each
-entry in the JSON value, and return the latest bundle that passes validation. This prevents sneaky
-additions of unauthorized CA certificates from escaping detection.
+entry in the JSON value, and return the latest bundle that passes validation.
 
 The cacert.pem files contained within are [reproducible from Mozilla's bundle](https://curl.haxx.se/docs/mk-ca-bundle.html).
 
+### How is Certainty different from composer/ca-bundle?
+
+The key differences are:
+
+* Certainty will keep the CA-Cert bundles on your system up-to-date even if you do not
+  run `composer update`.
+* We sign our CA-Cert bundles using Ed25519.
+
 ## Using Certainty
 
-### Getting the Path to the Latest CACert Bundle at Run-Time
-
-You can just fetch the latest bundle's path at runtime. For example, using cURL:
-
-```php
-<?php
-$latestBundle = (new \ParagonIE\Certainty\Fetch())
-    ->getLatestBundle();
-
-$ch = curl_init();
-//  ... snip ...
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-curl_setopt($ch, CURLOPT_CAINFO, $latestBundle->getFilePath());
-``` 
-
-### Create Symlink to Latest CACert
-
-After running `composer update`, simply run a script that executes the following.
-
-```php
-<?php
-(new \ParagonIE\Certainty\Fetch())
-    ->getLatestBundle()
-    ->createSymlink('/path/to/cacert.pem');
-```
-
-Then, make sure your HTTP library is using the cacert path provided.
-
-```php
-<?php
-
-$ch = curl_init();
-//  ... snip ...
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-curl_setopt($ch, CURLOPT_CAINFO, '/path/to/cacert.perm');
-``` 
-
-This approach is useful if you're using at third-party library that expects a cacert.pem file at
-a hard-coded location. However, you should **prefer** the first approach. 
+See [the documentation](docs/README.md). 
