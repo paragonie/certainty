@@ -45,10 +45,11 @@ security fixes) and new features.
 ### Non-Supported Use Case:
 
 If you are not using [`RemoteFetch`](docs/features/RemoteFetch.md) (which is strongly recommended
-thst you do, and we only provide support for systems that *do*), then you want to use `dev-master`
-rather than a version constraint, due to the nature of CA Certificates. If a major CA gets
-compromised and their certificates are revoked, you don't want to continue trusting these
-certificates.
+thst you do, and we only provide support for systems that *do* use `RemoteFetch`), then you want
+to use `dev-master` rather than a version constraint, due to the nature of CA Certificates.
+
+If a major CA gets compromised and their certificates are revoked, you don't want to continue
+trusting these certificates.
 
 Furthermore, in the event of avoiding `RemoteFetch`, you should be running `composer update` at least
 once per week to prevent stale CA-Cert files from causing issues.
