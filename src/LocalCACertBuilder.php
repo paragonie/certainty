@@ -219,13 +219,13 @@ class LocalCACertBuilder extends Bundle
     public function setSigningKey($secretKey = '')
     {
         // Handle hex-encoded strings.
-        if (\ParagonIE_Sodium_Core_Util::substr($secretKey) === 128) {
+        if (\ParagonIE_Sodium_Core_Util::strlen($secretKey) === 128) {
             /** @var string $secretKey */
             $secretKey = Hex::decode($secretKey);
             if (!\is_string($secretKey)) {
                 throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
             }
-        } elseif (\ParagonIE_Sodium_Core_Util::substr($secretKey) !== 64) {
+        } elseif (\ParagonIE_Sodium_Core_Util::strlen($secretKey) !== 64) {
             throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
         }
         $this->secretKey = $secretKey;
