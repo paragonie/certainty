@@ -66,7 +66,7 @@ class Fetch
     /**
      * Get an array of all of the Bundles, ordered most-recent to oldest.
      *
-     * No validation is perforemd automatically.
+     * No validation is performed automatically.
      *
      * @param string $customValidator
      * @return array<int, Bundle>
