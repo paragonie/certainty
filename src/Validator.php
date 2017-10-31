@@ -144,7 +144,7 @@ class Validator
         if (!\ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
             $signature,
             $result['contents'],
-            $publicKey
+            Hex::decode($publicKey)
         )) {
             return false;
         }
@@ -156,7 +156,11 @@ class Validator
 
         // Lazy evaluation: Repository name not fouind?
         if (\strpos($result['contents'], Certainty::REPOSITORY) === false) {
-            return false;
+            /** @var string $altRepoName */
+            $altRepoName = \json_encode(Certainty::REPOSITORY);
+            if (\strpos($result['contents'], $altRepoName) === false) {
+                return false;
+            }
         }
 
         // If we've gotten here, then this Chronicle has our update logged.
