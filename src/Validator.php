@@ -1,5 +1,6 @@
 <?php
 namespace ParagonIE\Certainty;
+use GuzzleHttp\Exception\ConnectException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
 
@@ -67,11 +68,15 @@ class Validator
         $publicKey = Base64UrlSafe::decode(static::CHRONICLE_PUBKEY);
         $guzzle = Certainty::getGuzzleClient();
 
-        $response = $guzzle->get(
-            \rtrim($chronicleUrl, '/') .
-            '/lookup/' .
-            $bundle->getChronicleHash()
-        );
+        try {
+            $response = $guzzle->get(
+                \rtrim($chronicleUrl, '/') .
+                '/lookup/' .
+                $bundle->getChronicleHash()
+            );
+        } catch (ConnectException $ex) {
+            return false;
+        }
 
         /** @var string $body */
         $body = (string) $response->getBody();
