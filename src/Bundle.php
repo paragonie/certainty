@@ -12,6 +12,9 @@ use ParagonIE\ConstantTime\Hex;
  */
 class Bundle
 {
+    /** @var string $chronicleHash */
+    protected $chronicleHash = '';
+
     /** @var Validator $customValidator */
     protected $customValidator;
 
@@ -31,17 +34,20 @@ class Bundle
      * @param string $sha256sum       Hex-encoded string
      * @param string $signature       Hex-encoded string
      * @param string $customValidator Fully-Qualified Class Name
+     * @param string $chronicleHash   Chronicle Hash
      * @throws \TypeError
      */
     public function __construct(
         $filePath = '',
         $sha256sum = '',
         $signature = '',
-        $customValidator = ''
+        $customValidator = '',
+        $chronicleHash = ''
     ) {
         $this->filePath = $filePath;
         $this->sha256sum = $sha256sum;
         $this->signature = $signature;
+        $this->chronicleHash = $chronicleHash;
         $newClass = new Validator();
         if (!empty($customValidator)) {
             if (\class_exists($customValidator)) {
@@ -110,6 +116,16 @@ class Bundle
             return Hex::decode($this->signature);
         }
         return $this->signature;
+    }
+
+    /**
+     * Get the Chronicle hash (always base64url-encoded)
+     *
+     * @return string
+     */
+    public function getChronicleHash()
+    {
+        return $this->chronicleHash;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
 
 /**
@@ -9,6 +10,21 @@ use ParagonIE\ConstantTime\Hex;
  */
 class LocalCACertBuilder extends Bundle
 {
+    /**
+     * @var string
+     */
+    protected $chroniclePublicKey = '';
+
+    /**
+     * @var string
+     */
+    protected $chronicleRepoName = 'paragonie/certainty';
+
+    /**
+     * @var string
+     */
+    protected $chronicleUrl = '';
+
     /**
      * @var string
      */
@@ -90,6 +106,74 @@ class LocalCACertBuilder extends Bundle
     }
 
     /**
+     * Publish the most recent CACert information to the local Chronicle.
+     *
+     * @param string $sha256sum
+     * @param string $signature
+     * @return string
+     * @throws \Exception
+     */
+    protected function commitToChronicle($sha256sum, $signature)
+    {
+        if (empty($this->chronicleUrl) || empty($this->chroniclePublicKey)) {
+            return '';
+        }
+
+        /** @var string $body */
+        $body = \json_encode(
+            [
+                'repository' => $this->chronicleRepoName,
+                'sha256' => $sha256sum,
+                'signature' => $signature,
+                'time' => (new \DateTime())->format(\DateTime::ATOM)
+            ],
+            JSON_PRETTY_PRINT
+        );
+        if (!\is_string($body)) {
+            throw new \Exception('Could not build a valid JSON message.');
+        }
+        $signature = \ParagonIE_Sodium_Compat::crypto_sign_detached($body, $this->secretKey);
+
+        $http = Certainty::getGuzzleClient();
+        $response = $http->post(
+            $this->chronicleUrl . '/publish',
+            [
+                'headers' => [
+                    Certainty::ED25519_HEADER => Base64UrlSafe::encode($signature)
+                ],
+                'body' => $body,
+            ]
+        );
+
+        $responseBody = (string) $response->getBody();
+        $validSig = false;
+        foreach ($response->getHeader(Certainty::ED25519_HEADER) as $sigLine) {
+            $sig = Base64UrlSafe::decode($sigLine);
+            $validSig = $validSig || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
+                $sig,
+                $responseBody,
+                $this->chroniclePublicKey
+            );
+        }
+        if (!$validSig) {
+            throw new \Exception('Invalid response from Chronicle');
+        }
+
+        /** @var array $json */
+        $json = \json_decode($responseBody, true);
+        if (!\is_array($json)) {
+            return '';
+        }
+        if (!isset($json['results'])) {
+            return '';
+        }
+        if (!isset($json['results']['summaryhash'])) {
+            return '';
+        }
+        return (string) $json['results']['summaryhash'];
+    }
+
+    /**
      * Get the public key.
      *
      * @param bool $raw
@@ -145,13 +229,20 @@ class LocalCACertBuilder extends Bundle
         $pieces = \explode('/', \trim($this->outputPem, '/'));
 
         // Put at the front of the array
-        \array_unshift($json, [
+        $entry = [
             'custom' => \get_class($this->customValidator),
             'date' => \date('Y-m-d'),
             'file' => \array_pop($pieces),
             'sha256' => $sha256sum,
             'signature' => Hex::encode($signature)
-        ]);
+        ];
+
+        $chronicleHash = $this->commitToChronicle($sha256sum, $signature);
+        if (!empty($chronicleHash)) {
+            $entry['chronicle'] = $chronicleHash;
+        }
+
+        \array_unshift($json, $entry);
         $jsonSave = \json_encode($json, JSON_PRETTY_PRINT);
         if (!\is_string($jsonSave)) {
             throw new \Exception(\json_last_error_msg());
@@ -161,6 +252,32 @@ class LocalCACertBuilder extends Bundle
 
         $return = \file_put_contents($this->outputJson, $jsonSave);
         return \is_int($return);
+    }
+
+    /**
+     * Configure the local Chronicle.
+     *
+     * @param string $url
+     * @param string $publicKey
+     * @param string $repository
+     * @return $this
+     * @throws \Exception
+     */
+    public function setChronicle($url = '', $publicKey = '', $repository = 'paragonie/certainty')
+    {
+        if (\ParagonIE_Sodium_Core_Util::strlen($publicKey) === 64) {
+            /** @var string $publicKey */
+            $publicKey = Hex::decode($publicKey);
+            if (!\is_string($publicKey)) {
+                throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
+            }
+        } elseif (\ParagonIE_Sodium_Core_Util::strlen($publicKey) !== 32) {
+            throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
+        }
+        $this->chroniclePublicKey = $publicKey;
+        $this->chronicleUrl = $url;
+        $this->chronicleRepoName = $repository;
+        return $this;
     }
 
     /**

@@ -13,6 +13,7 @@ use GuzzleHttp\Client;
 class RemoteFetch extends Fetch
 {
     const CHECK_SIGNATURE_BY_DEFAULT = true;
+    const CHECK_CHRONICLE_BY_DEFAULT = true;
     const DEFAULT_URL = 'https://raw.githubusercontent.com/paragonie/certainty/master/data/';
 
     /** @var \DateInterval */
@@ -44,9 +45,7 @@ class RemoteFetch extends Fetch
 
         if (\is_null($http)) {
             if (\file_exists($this->dataDirectory . '/ca-certs.json')) {
-                $http = new Client([
-                    'verify' => (new Fetch($this->dataDirectory))->getLatestBundle()->getFilePath()
-                ]);
+                $http = Certainty::getGuzzleClient(new Fetch($this->dataDirectory));
             } else {
                 $http = new Client();
             }
