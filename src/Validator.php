@@ -137,7 +137,9 @@ class Validator
             // Incomplete data.
             return false;
         }
-        $publicKey = Hex::encode(Base64UrlSafe::decode($result['publickey']));
+        $publicKey = (string) Hex::encode(
+            (string) Base64UrlSafe::decode($result['publickey'])
+        );
         if (
             !\hash_equals(static::PRIMARY_SIGNING_PUBKEY, $publicKey)
                 &&
