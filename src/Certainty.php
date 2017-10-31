@@ -23,6 +23,9 @@ class Certainty
         }
         return new Client(
             [
+                'curl.options' => [
+                    CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
+                ],
                 'verify' => $fetch->getLatestBundle()->getFilePath()
             ]
         );
