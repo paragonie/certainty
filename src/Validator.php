@@ -150,7 +150,8 @@ class Validator
         }
 
         // Let's validate the signature.
-        $signature = Base64UrlSafe::decode($result['signature']);
+        /** @var string $signature */
+        $signature = (string) Base64UrlSafe::decode($result['signature']);
         if (!\ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
             $signature,
             $result['contents'],
