@@ -8,7 +8,6 @@ php:
 - 7.2
 
 before_install:
-- sudo apt-get upgrade
 - composer update
 
 script:

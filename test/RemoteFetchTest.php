@@ -12,8 +12,8 @@ class RemoteFetchTest extends TestCase
 
     public function setUp()
     {
-        if (getenv('TRAVIS')) {
-            # $this->markTestSkipped('Unknown GnuTLS errors');
+        if (\getenv('TRAVIS') && PHP_VERSION_ID < 70200) {
+            $this->markTestSkipped('Unknown GnuTLS errors');
         }
         $this->dir = __DIR__ . '/static/data-remote';
         if (!\is_dir($this->dir)) {
