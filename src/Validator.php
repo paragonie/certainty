@@ -1,5 +1,6 @@
 <?php
 namespace ParagonIE\Certainty;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
@@ -65,7 +66,9 @@ class Validator
             return false;
         }
         $chronicleUrl = static::CHRONICLE_URL;
+        /** @var string $publicKey */
         $publicKey = Base64UrlSafe::decode(static::CHRONICLE_PUBKEY);
+        /** @var Client $guzzle */
         $guzzle = Certainty::getGuzzleClient();
 
         try {
@@ -91,9 +94,9 @@ class Validator
                 throw new \TypeError('Signature invalid');
             }
             $sigValid = $sigValid || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
-                $signature,
-                $body,
-                $publicKey
+                (string) $signature,
+                (string) $body,
+                (string) $publicKey
             );
         }
         if (!$sigValid) {
@@ -134,7 +137,9 @@ class Validator
             // Incomplete data.
             return false;
         }
-        $publicKey = Hex::encode(Base64UrlSafe::decode($result['publickey']));
+        $publicKey = (string) Hex::encode(
+            (string) Base64UrlSafe::decode($result['publickey'])
+        );
         if (
             !\hash_equals(static::PRIMARY_SIGNING_PUBKEY, $publicKey)
                 &&
@@ -145,7 +150,8 @@ class Validator
         }
 
         // Let's validate the signature.
-        $signature = Base64UrlSafe::decode($result['signature']);
+        /** @var string $signature */
+        $signature = (string) Base64UrlSafe::decode($result['signature']);
         if (!\ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
             $signature,
             $result['contents'],

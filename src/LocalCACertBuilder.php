@@ -148,6 +148,7 @@ class LocalCACertBuilder extends Bundle
         $responseBody = (string) $response->getBody();
         $validSig = false;
         foreach ($response->getHeader(Certainty::ED25519_HEADER) as $sigLine) {
+            /** @var string $sig */
             $sig = Base64UrlSafe::decode($sigLine);
             $validSig = $validSig || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
                 $sig,
