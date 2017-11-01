@@ -11,6 +11,21 @@ Automate your PHP projects' cacert.pem management.
 
 **Requires PHP 5.6 or newer.**
 
+## Who is Certainty meant for?
+
+* Open source developers with no control over where their code is deployed
+  (e.g. Magento module developers).
+* People whose code might be deployed in weird environments with CACert 
+  bundles that are outdated or in unpredictable locations.
+* People who are generally forced between:
+  1. Disabling certificate validation entirely, or
+  2. Increasing their support burden to deal with corner-cases where suddenly
+     HTTP requests are failing on weird systems
+
+Certainty allows your software to "just work" (which is usually the motivation
+for disabling certificate validation) without being vulnerable to man-in-the-middle
+attacks.
+
 ### Motivation
 
 Many HTTP libraries require you to specify a file path to a `cacert.pem` file in order to use TLS correctly.
