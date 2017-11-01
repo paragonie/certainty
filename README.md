@@ -32,11 +32,8 @@ source projects do this.
 From Composer:
 
 ```bash
-composer require paragonie/certainty:^0|^1
+composer require paragonie/certainty:^1
 ```
-
-When we are satisfied with a stable `v1` release, you should drop the `^0|` part of your
-version constraints.
 
 Certainty will keep certificates up to date via `RemoteFetch`, so you don't need to update
 Certainty library just to get fresh CA-Cert bundless. Update only for bugfixes (especially
@@ -45,7 +42,7 @@ security fixes) and new features.
 ### Non-Supported Use Case:
 
 If you are not using [`RemoteFetch`](docs/features/RemoteFetch.md) (which is strongly recommended
-thst you do, and we only provide support for systems that *do* use `RemoteFetch`), then you want
+that you do, and we only provide support for systems that *do* use `RemoteFetch`), then you want
 to use `dev-master` rather than a version constraint, due to the nature of CA Certificates.
 
 If a major CA gets compromised and their certificates are revoked, you don't want to continue
@@ -53,6 +50,10 @@ trusting these certificates.
 
 Furthermore, in the event of avoiding `RemoteFetch`, you should be running `composer update` at least
 once per week to prevent stale CA-Cert files from causing issues.
+
+## Using Certainty
+
+See [the documentation](docs/README.md). 
 
 ## What Certainty Does
 
@@ -69,8 +70,5 @@ The key differences are:
 
 * Certainty will keep the CA-Cert bundles on your system up-to-date even if you do not
   run `composer update`.
-* We sign our CA-Cert bundles using Ed25519.
-
-## Using Certainty
-
-See [the documentation](docs/README.md). 
+* We sign our CA-Cert bundles using Ed25519, and check every update into the
+  [PHP community Chronicle](https://php-chronicle.pie-hosted.com).
