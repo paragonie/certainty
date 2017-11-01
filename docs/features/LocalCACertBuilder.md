@@ -74,3 +74,37 @@ LocalCACertBuilder::fromBundle($latest)
 
 Once you are satisfied, you can publish your data directory and your users, whom will be using
 your custom Validator alongside [`RemoteFetch`](RemoteFetch.md), should always be up-to-date.
+
+### Chronicle Verification for Custom CAs
+
+The default Validator is configured to verify that all updates are published to the PHP
+Community's Chronicle instance. You can either chose to opt out of verification, or 
+[run your own Chronicle](https://github.com/paragonie/chronicle/tree/master/docs). 
+
+Once you have one setup, all you need to do is update your `LocalCACertBuilder` code with
+the Client ID, Public Key, and URL.
+
+```php
+<?php
+use ParagonIE\Certainty\LocalCACertBuilder;
+use ParagonIE\Certainty\RemoteFetch;
+use ParagonIE\ConstantTime\Hex;
+
+$latest = (new RemoteFetch())->getLatestBundle();
+
+/* This snippet is mostly identical from the previous one. */
+LocalCACertBuilder::fromBundle($latest)
+    ->setSigningKey(Hex::decode('your hex-encoded secret key goes here'))
+    ->appendCACertFile('/path/to/your-in-house-ca-certs.pem')
+    ->setOutputJsonFile('/path/to/output/ca-certs.json')
+    ->setOutputPemFile('/path/to/output/cacert-' . date('Y-m-d') . '.pem')
+    /* This is the new part: */
+    ->setChronicle(
+        'https://foo-chronicle.example.com/',
+         '<your public key (base64url)>',
+         '<client id for this public key>',
+         'acme-company/local-certainty-ca'
+     )
+    /* You always save() at the end */
+    ->save();
+```

@@ -15,6 +15,11 @@ use ParagonIE\ConstantTime\Hex;
 class LocalCACertBuilder extends Bundle
 {
     /**
+     * @var string $chronicleClientId
+     */
+    protected $chronicleClientId = '';
+
+    /**
      * @var string $chroniclePublicKey
      */
     protected $chroniclePublicKey = '';
@@ -121,7 +126,7 @@ class LocalCACertBuilder extends Bundle
      */
     protected function commitToChronicle($sha256sum, $signature)
     {
-        if (empty($this->chronicleUrl) || empty($this->chroniclePublicKey)) {
+        if (empty($this->chronicleUrl) || empty($this->chroniclePublicKey) || empty($this->chronicleClientId)) {
             return '';
         }
 
@@ -145,6 +150,7 @@ class LocalCACertBuilder extends Bundle
             $this->chronicleUrl . '/publish',
             [
                 'headers' => [
+                    Certainty::CHRONICLE_CLIENT_ID => $this->chronicleClientId,
                     Certainty::ED25519_HEADER => Base64UrlSafe::encode($signature)
                 ],
                 'body' => $body,
@@ -268,11 +274,12 @@ class LocalCACertBuilder extends Bundle
      *
      * @param string $url
      * @param string $publicKey
+     * @param string $clientId
      * @param string $repository
      * @return $this
      * @throws CryptoException
      */
-    public function setChronicle($url = '', $publicKey = '', $repository = 'paragonie/certainty')
+    public function setChronicle($url = '', $publicKey = '', $clientId = '', $repository = 'paragonie/certainty')
     {
         if (\ParagonIE_Sodium_Core_Util::strlen($publicKey) === 64) {
             /** @var string $publicKey */
@@ -283,6 +290,7 @@ class LocalCACertBuilder extends Bundle
         } elseif (\ParagonIE_Sodium_Core_Util::strlen($publicKey) !== 32) {
             throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
         }
+        $this->chronicleClientId = $clientId;
         $this->chroniclePublicKey = $publicKey;
         $this->chronicleUrl = $url;
         $this->chronicleRepoName = $repository;
