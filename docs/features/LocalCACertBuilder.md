@@ -36,6 +36,10 @@ use ParagonIE\Certainty\Validator;
 class CustomValidator extends Validator
 {
     const PRIMARY_SIGNING_PUBKEY = 'your hex-encoded public key goes here';
+    
+    // Blank these values to disable Chronicle verification:
+    const CHRONICLE_URL = '';
+    const CHRONICLE_PUBKEY = ''; // Base64url-encoded
 }
 ```
 

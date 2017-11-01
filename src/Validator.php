@@ -72,6 +72,10 @@ class Validator
      */
     public static function checkChronicleHash(Bundle $bundle)
     {
+        if (empty(static::CHRONICLE_PUBKEY) && empty(static::CHRONICLE_URL)) {
+            // Custom validator has opted to fail open here. Who are we to dissent?
+            return true;
+        }
         if (empty($bundle->getChronicleHash())) {
             // No chronicle hash? This check fails closed.
             return false;
