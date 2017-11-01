@@ -2,6 +2,8 @@
 namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
+use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\NetworkException;
 
 /**
  * Class RemoteFetch
@@ -90,13 +92,13 @@ class RemoteFetch extends Fetch
      *
      * @param string $customValidator
      * @return array<int, Bundle>
-     * @throws \Exception
+     * @throws NetworkException
      */
     protected function listBundles($customValidator = '')
     {
         if ($this->cacheExpired()) {
             if (!$this->remoteFetchBundles()) {
-                throw new \Exception('Could not download bundles');
+                throw new NetworkException('Could not download bundles');
             }
         }
         return parent::listBundles($customValidator);
@@ -106,7 +108,7 @@ class RemoteFetch extends Fetch
      * This handles the actual HTTP request.
      *
      * @return bool
-     * @throws \Exception
+     * @throws EncodingException
      */
     protected function remoteFetchBundles()
     {
@@ -114,7 +116,7 @@ class RemoteFetch extends Fetch
         $body = (string) $request->getBody();
         $jsonDecoded = \json_decode($body, true);
         if (!\is_array($jsonDecoded)) {
-            throw new \Exception(\json_last_error_msg());
+            throw new EncodingException(\json_last_error_msg());
         }
 
         if (\file_exists($this->dataDirectory . '/ca-certs.json')) {

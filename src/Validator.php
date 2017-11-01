@@ -1,7 +1,12 @@
 <?php
 namespace ParagonIE\Certainty;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use ParagonIE\Certainty\Exception\CryptoException;
+use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\InvalidResponseException;
+use ParagonIE\Certainty\Exception\RemoteException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
 
@@ -11,6 +16,9 @@ use ParagonIE\ConstantTime\Hex;
  */
 class Validator
 {
+    // Set this to true to not throw exceptions
+    const THROW_MORE_EXCEPTIONS = false;
+
     // Ed25519 public keys
     const PRIMARY_SIGNING_PUBKEY = '98f2dfad4115fea9f096c35485b3bf20b06e94acac3b7acf6185aa5806020342';
     const BACKUP_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
@@ -58,28 +66,31 @@ class Validator
      * @param Bundle $bundle
      * @return bool
      * @throws \Exception
-     * @throws \TypeError
+     * @throws ConnectException
+     * @throws EncodingException
+     * @throws RemoteException
      */
     public static function checkChronicleHash(Bundle $bundle)
     {
         if (empty($bundle->getChronicleHash())) {
+            // No chronicle hash? This check fails closed.
             return false;
         }
+        // Inherited classes can override this.
         $chronicleUrl = static::CHRONICLE_URL;
+
         /** @var string $publicKey */
         $publicKey = Base64UrlSafe::decode(static::CHRONICLE_PUBKEY);
+
         /** @var Client $guzzle */
         $guzzle = Certainty::getGuzzleClient();
 
-        try {
-            $response = $guzzle->get(
-                \rtrim($chronicleUrl, '/') .
-                '/lookup/' .
-                $bundle->getChronicleHash()
-            );
-        } catch (ConnectException $ex) {
-            return false;
-        }
+        // We could catch the ConnectException, but let's not.
+        $response = $guzzle->get(
+            \rtrim($chronicleUrl, '/') .
+            '/lookup/' .
+            $bundle->getChronicleHash()
+        );
 
         /** @var string $body */
         $body = (string) $response->getBody();
@@ -91,7 +102,7 @@ class Validator
             /** @var string $signature */
             $signature = Base64UrlSafe::decode($header);
             if (!\is_string($signature)) {
-                throw new \TypeError('Signature invalid');
+                throw new EncodingException('Signature invalid');
             }
             $sigValid = $sigValid || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
                 (string) $signature,
@@ -100,18 +111,24 @@ class Validator
             );
         }
         if (!$sigValid) {
+            if (static::THROW_MORE_EXCEPTIONS) {
+                throw new CryptoException('Invalid signature.');
+            }
             // No valid signatures
             return false;
         }
         $json = \json_decode($body, true);
         if (!\is_array($json)) {
-            throw new \TypeError('Invalid JSON response');
+            throw new EncodingException('Invalid JSON response');
         }
 
         // If the status was successful,
         if (!\hash_equals('OK', $json['status'])) {
-            if (isset($json['error'])) {
-                throw new \Exception($json['error']);
+            if (self::THROW_MORE_EXCEPTIONS) {
+                if (isset($json['error'])) {
+                    throw new RemoteException($json['error']);
+                }
+                throw new RemoteException('Invalid status returned by the API');
             }
             return false;
         }
@@ -130,10 +147,15 @@ class Validator
      * @param Bundle $bundle
      * @param array $result
      * @return bool
+     * @throws CryptoException
+     * @throws InvalidResponseException
      */
     protected static function validateChronicleContents(Bundle $bundle, array $result = [])
     {
         if (!isset($result['signature'], $result['contents'], $result['publickey'])) {
+            if (static::THROW_MORE_EXCEPTIONS) {
+                throw new InvalidResponseException('Incomplete data');
+            }
             // Incomplete data.
             return false;
         }
@@ -157,11 +179,17 @@ class Validator
             $result['contents'],
             Hex::decode($publicKey)
         )) {
+            if (static::THROW_MORE_EXCEPTIONS) {
+                throw new CryptoException('Invalid signature.');
+            }
             return false;
         }
 
         // Lazy evaluation: SHA256 hash not present?
         if (\strpos($result['contents'], $bundle->getSha256Sum()) === false) {
+            if (static::THROW_MORE_EXCEPTIONS) {
+                throw new InvalidResponseException('SHA256 hash not present in response body');
+            }
             return false;
         }
 
@@ -170,6 +198,9 @@ class Validator
             /** @var string $altRepoName */
             $altRepoName = \json_encode(Certainty::REPOSITORY);
             if (\strpos($result['contents'], $altRepoName) === false) {
+                if (static::THROW_MORE_EXCEPTIONS) {
+                    throw new InvalidResponseException('Repository name not present in response body');
+                }
                 return false;
             }
         }

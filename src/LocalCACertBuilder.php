@@ -1,6 +1,10 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use ParagonIE\Certainty\Exception\CryptoException;
+use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\FilesystemException;
+use ParagonIE\Certainty\Exception\InvalidResponseException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
 
@@ -69,14 +73,14 @@ class LocalCACertBuilder extends Bundle
      * Load the original bundle's contents.
      *
      * @return self
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function loadOriginal()
     {
         /** @var string original */
         $this->original = \file_get_contents($this->filePath);
         if (!\is_string($this->original)) {
-            throw new \Exception('Could not read contents of CACert file provided.');
+            throw new FilesystemException('Could not read contents of CACert file provided.');
         }
         return $this;
     }
@@ -87,7 +91,7 @@ class LocalCACertBuilder extends Bundle
      *
      * @param string $path
      * @return self
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function appendCACertFile($path = '')
     {
@@ -99,7 +103,7 @@ class LocalCACertBuilder extends Bundle
         }
         $contents = \file_get_contents($path);
         if (!\is_string($contents)) {
-            throw new \Exception('Could not read contents of CACert file provided.');
+            throw new FilesystemException('Could not read contents of CACert file provided.');
         }
         $this->contents .= $contents . "\n";
         return $this;
@@ -111,6 +115,8 @@ class LocalCACertBuilder extends Bundle
      * @param string $sha256sum
      * @param string $signature
      * @return string
+     *
+     * @throws EncodingException
      * @throws \Exception
      */
     protected function commitToChronicle($sha256sum, $signature)
@@ -130,7 +136,7 @@ class LocalCACertBuilder extends Bundle
             JSON_PRETTY_PRINT
         );
         if (!\is_string($body)) {
-            throw new \Exception('Could not build a valid JSON message.');
+            throw new EncodingException('Could not build a valid JSON message.');
         }
         $signature = \ParagonIE_Sodium_Compat::crypto_sign_detached($body, $this->secretKey);
 
@@ -157,7 +163,7 @@ class LocalCACertBuilder extends Bundle
             );
         }
         if (!$validSig) {
-            throw new \Exception('Invalid response from Chronicle');
+            throw new InvalidResponseException('No valid signature for Chronicle response.');
         }
 
         /** @var array $json */
@@ -195,8 +201,10 @@ class LocalCACertBuilder extends Bundle
     /**
      * Sign and save the combined CA-Cert file.
      *
-     * @throws \Exception
      * @return bool
+     * @throws EncodingException
+     * @throws FilesystemException
+     * @throws \Exception
      */
     public function save()
     {
@@ -212,7 +220,7 @@ class LocalCACertBuilder extends Bundle
         /** @var string $return */
         $return = \file_put_contents($this->outputPem, $this->contents);
         if (!\is_int($return)) {
-            throw new \Exception('Could not save PEM file.');
+            throw new FilesystemException('Could not save PEM file.');
         }
         $sha256sum = \hash('sha256', $this->contents);
         $signature = \ParagonIE_Sodium_Compat::crypto_sign_detached($this->contents, $this->secretKey);
@@ -222,7 +230,7 @@ class LocalCACertBuilder extends Bundle
             $fileData = \file_get_contents($this->outputJson);
             $json = \json_decode($fileData, true);
             if (!\is_array($json)) {
-                throw new \Exception('Invalid JSON data stored in file.');
+                throw new EncodingException('Invalid JSON data stored in file.');
             }
         } else {
             $json = [];
@@ -246,7 +254,7 @@ class LocalCACertBuilder extends Bundle
         \array_unshift($json, $entry);
         $jsonSave = \json_encode($json, JSON_PRETTY_PRINT);
         if (!\is_string($jsonSave)) {
-            throw new \Exception(\json_last_error_msg());
+            throw new EncodingException(\json_last_error_msg());
         }
         $this->sha256sum = $sha256sum;
         $this->signature = $signature;
@@ -262,7 +270,7 @@ class LocalCACertBuilder extends Bundle
      * @param string $publicKey
      * @param string $repository
      * @return $this
-     * @throws \Exception
+     * @throws CryptoException
      */
     public function setChronicle($url = '', $publicKey = '', $repository = 'paragonie/certainty')
     {
@@ -270,10 +278,10 @@ class LocalCACertBuilder extends Bundle
             /** @var string $publicKey */
             $publicKey = Hex::decode($publicKey);
             if (!\is_string($publicKey)) {
-                throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
+                throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
             }
         } elseif (\ParagonIE_Sodium_Core_Util::strlen($publicKey) !== 32) {
-            throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
+            throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
         }
         $this->chroniclePublicKey = $publicKey;
         $this->chronicleUrl = $url;
@@ -332,7 +340,7 @@ class LocalCACertBuilder extends Bundle
      *
      * @param string $secretKey
      * @return self
-     * @throws \Exception
+     * @throws CryptoException
      */
     public function setSigningKey($secretKey = '')
     {
@@ -341,10 +349,10 @@ class LocalCACertBuilder extends Bundle
             /** @var string $secretKey */
             $secretKey = Hex::decode($secretKey);
             if (!\is_string($secretKey)) {
-                throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
+                throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
             }
         } elseif (\ParagonIE_Sodium_Core_Util::strlen($secretKey) !== 64) {
-            throw new \Exception('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
+            throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
         }
         $this->secretKey = $secretKey;
         return $this;
