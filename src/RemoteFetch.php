@@ -18,13 +18,19 @@ class RemoteFetch extends Fetch
     const CHECK_CHRONICLE_BY_DEFAULT = true;
     const DEFAULT_URL = 'https://raw.githubusercontent.com/paragonie/certainty/master/data/';
 
-    /** @var \DateInterval */
+    /**
+     * @var \DateInterval $cacheTimeout
+     */
     protected $cacheTimeout;
 
-    /** @var Client */
+    /**
+     * @var Client $http
+     */
     protected $http;
 
-    /** @var string */
+    /**
+     * @var string $url
+     */
     protected $url = '';
 
     /**
@@ -65,6 +71,7 @@ class RemoteFetch extends Fetch
         } else {
             throw new \TypeError('Invalid timeout. Expected a DateInterval or string.');
         }
+        /** @var \DateInterval $timeoutObj */
         $this->cacheTimeout = $timeoutObj;
     }
 

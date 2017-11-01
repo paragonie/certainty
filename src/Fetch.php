@@ -1,6 +1,10 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use ParagonIE\Certainty\Exception\BundleException;
+use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\FilesystemException;
+
 /**
  * Class Fetch
  * @package ParagonIE\Certainty
@@ -10,7 +14,9 @@ class Fetch
     const CHECK_SIGNATURE_BY_DEFAULT = false;
     const CHECK_CHRONICLE_BY_DEFAULT = false;
 
-    /** @var string $dataDirectory */
+    /**
+     * @var string $dataDirectory
+     */
     protected $dataDirectory = '';
 
     /**
@@ -18,7 +24,7 @@ class Fetch
      *
      * You almost certainly want to use RemoteFetch instead.
      *
-     * @param string $dataDir
+     * @param string $dataDir Where the certificates and configuration lives
      */
     public function __construct($dataDir = '')
     {
@@ -33,10 +39,11 @@ class Fetch
      * Get the latest bundle. Checks the SHA256 hash of the file versus what
      * is expected. Optionally checks the Ed25519 signature.
      *
-     * @param bool|null $checkEd25519Signature
-     * @param bool|null $checkChronicle
+     * @param bool|null $checkEd25519Signature Enforce Ed25519 signatures?
+     * @param bool|null $checkChronicle        Require cert bundles be stored
+     *                                         inside a Chronicle instance?
      * @return Bundle
-     * @throws \Exception
+     * @throws BundleException
      */
     public function getLatestBundle($checkEd25519Signature = null, $checkChronicle = null)
     {
@@ -70,7 +77,7 @@ class Fetch
                 }
             }
         }
-        throw new \Exception('No valid bundles were found in the data directory.');
+        throw new BundleException('No valid bundles were found in the data directory.');
     }
 
     /**
@@ -78,7 +85,7 @@ class Fetch
      *
      * No validation is performed automatically.
      *
-     * @param string $customValidator
+     * @param string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
      */
     public function getAllBundles($customValidator = '')
@@ -89,30 +96,30 @@ class Fetch
     /**
      * List bundles
      *
-     * @param string $customValidator
+     * @param string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
      * @throws \Exception
      */
     protected function listBundles($customValidator = '')
     {
         if (!\file_exists($this->dataDirectory . '/ca-certs.json')) {
-            throw new \Exception('ca-certs.json not found in data directory.');
+            throw new FilesystemException('ca-certs.json not found in data directory.');
         }
         if (!\is_readable($this->dataDirectory . '/ca-certs.json')) {
-            throw new \Exception('ca-certs.json is not readable.');
+            throw new FilesystemException('ca-certs.json is not readable.');
         }
         $contents = \file_get_contents($this->dataDirectory . '/ca-certs.json');
         if (!\is_string($contents)) {
-            throw new \Exception('ca-certs.json could not be read.');
+            throw new FilesystemException('ca-certs.json could not be read.');
         }
         $data = \json_decode($contents, true);
         if (!\is_array($data)) {
-            throw new \Exception('ca-certs.json is not a valid JSON file.');
+            throw new EncodingException('ca-certs.json is not a valid JSON file.');
         }
         $bundles = [];
         foreach ($data as $row) {
             if (!isset($row['date'], $row['file'], $row['sha256'], $row['signature'])) {
-                // No
+                // The necessary keys are not defined.
                 continue;
             }
             $key = (int) (\preg_replace('/[^0-9]/', '', $row['date']) . '0000');

@@ -145,7 +145,7 @@ class Validator
      * Actually validates the contents of a Chronicle entry.
      *
      * @param Bundle $bundle
-     * @param array $result
+     * @param array $result  Chronicle API response (post signature validation)
      * @return bool
      * @throws CryptoException
      * @throws InvalidResponseException

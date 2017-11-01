@@ -15,42 +15,42 @@ use ParagonIE\ConstantTime\Hex;
 class LocalCACertBuilder extends Bundle
 {
     /**
-     * @var string
+     * @var string $chroniclePublicKey
      */
     protected $chroniclePublicKey = '';
 
     /**
-     * @var string
+     * @var string $chronicleRepoName
      */
     protected $chronicleRepoName = 'paragonie/certainty';
 
     /**
-     * @var string
+     * @var string $chronicleUrl
      */
     protected $chronicleUrl = '';
 
     /**
-     * @var string
+     * @var string $contents
      */
     protected $contents = '';
 
     /**
-     * @var string
+     * @var string $original
      */
     protected $original = '';
 
     /**
-     * @var string
+     * @var string $outputPem
      */
     protected $outputPem = '';
 
     /**
-     * @var string
+     * @var string $outputJson
      */
     protected $outputJson = '';
 
     /**
-     * @var string
+     * @var string $secretKey
      */
     protected $secretKey = '';
 

@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\ConstantTime\Hex;
 
 /**
@@ -12,19 +13,29 @@ use ParagonIE\ConstantTime\Hex;
  */
 class Bundle
 {
-    /** @var string $chronicleHash */
+    /**
+     * @var string $chronicleHash
+     */
     protected $chronicleHash = '';
 
-    /** @var Validator $customValidator */
+    /**
+     * @var Validator $customValidator
+     */
     protected $customValidator;
 
-    /** @var string $filePath */
+    /**
+     * @var string $filePath
+     */
     protected $filePath = '';
 
-    /** @var string $sha256sum */
+    /**
+     * @var string $sha256sum
+     */
     protected $sha256sum = '';
 
-    /** @var string $signature */
+    /**
+     * @var string $signature
+     */
     protected $signature = '';
 
     /**
@@ -48,7 +59,6 @@ class Bundle
         $this->sha256sum = $sha256sum;
         $this->signature = $signature;
         $this->chronicleHash = $chronicleHash;
-        $newClass = new Validator();
         if (!empty($customValidator)) {
             if (\class_exists($customValidator)) {
                 $newClass = new $customValidator();
@@ -56,6 +66,9 @@ class Bundle
                     throw new \TypeError('Invalid validator class');
                 }
             }
+        }
+        if (!isset($newClass)) {
+            $newClass = new Validator();
         }
         $this->customValidator = $newClass;
     }
@@ -66,7 +79,7 @@ class Bundle
      * @param string $destination
      * @param bool $unlinkIfExists
      * @return bool
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function createSymlink($destination = '', $unlinkIfExists = false)
     {
@@ -74,7 +87,7 @@ class Bundle
             if ($unlinkIfExists) {
                 \unlink($destination);
             } else {
-                throw new \Exception('Destination already exists.');
+                throw new FilesystemException('Destination already exists.');
             }
         }
         return \symlink($this->filePath, $destination);
@@ -92,7 +105,7 @@ class Bundle
      * Get the SHA256 hash of this bundle's contents. Defaults
      * to returning a hex-encoded string.
      *
-     * @param bool $raw
+     * @param bool $raw Return a raw binary string rather than hex-encoded?
      * @return string
      */
     public function getSha256Sum($raw = false)
@@ -107,7 +120,7 @@ class Bundle
      * Get the Ed25519 signature for this bundle. Defaults
      * to returning a hex-encoded string.
      *
-     * @param bool $raw
+     * @param bool $raw Return a raw binary string rather than hex-encoded?
      * @return string
      */
     public function getSignature($raw = false)
