@@ -6,6 +6,8 @@ This downloads the latest CA certificates from our Github repository and caches 
 
 Using the `RemoteFetch` class is rather straightforward.
 
+#### Basic Usage with cURL
+
 ```php
 <?php
 use ParagonIE\Certainty\RemoteFetch;
@@ -17,6 +19,43 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 curl_setopt($ch, CURLOPT_CAINFO, $latestCACertBundle->getFilePath());
+```
+
+#### Basic Usage with Guzzle
+
+```php
+<?php
+use ParagonIE\Certainty\RemoteFetch;
+use GuzzleHttp\Client;
+
+$fetcher = new RemoteFetch();
+$latestCACertBundle = $fetcher->getLatestBundle();
+$client = new Client();
+
+$response = $client->request('POST', '/url', [
+    'verify' => $latestCACertBundle->getFilePath() 
+]);
+```
+
+#### Basic Usage with Streams
+
+```php
+<?php
+use ParagonIE\Certainty\RemoteFetch;
+
+$fetcher = new RemoteFetch();
+$latestCACertBundle = $fetcher->getLatestBundle();
+
+$context = stream_context_create([
+    'ssl' => [
+        'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+        'verify_peer' => true,
+        'cafile' => $latestCACertBundle->getFilePath(),
+        'verify_depth' => 5
+    ]
+]);
+
+$data = \file_get_contents('https://php-chronicle.pie-hosted.com/chronicle/lookup/HuICLQCF_DWnQGbosC6fK8PuifQgIrRi2WYshB2erZY=', false, $context);
 ```
 
 ### Changing the Path or URL

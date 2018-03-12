@@ -10,6 +10,8 @@ Automate your PHP projects' cacert.pem management.
 [Read the blog post introducing Certainty](https://paragonie.com/blog/2017/10/certainty-automated-cacert-pem-management-for-php-software).
 
 **Requires PHP 5.6 or newer.**
+Certainty should work on any operating system (including Windows), although the symlink
+feature may not function in Virtualbox Shared Folders.
 
 ## Who is Certainty meant for?
 
