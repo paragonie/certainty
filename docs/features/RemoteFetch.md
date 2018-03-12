@@ -55,7 +55,11 @@ $context = stream_context_create([
     ]
 ]);
 
-$data = \file_get_contents('https://php-chronicle.pie-hosted.com/chronicle/lookup/HuICLQCF_DWnQGbosC6fK8PuifQgIrRi2WYshB2erZY=', false, $context);
+$data = file_get_contents(
+    'https://php-chronicle.pie-hosted.com/chronicle/lookup/HuICLQCF_DWnQGbosC6fK8PuifQgIrRi2WYshB2erZY=',
+    false,
+    $context
+);
 ```
 
 ### Changing the Path or URL
