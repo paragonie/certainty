@@ -47,11 +47,12 @@ class Fetch
      */
     public function getLatestBundle($checkEd25519Signature = null, $checkChronicle = null)
     {
+        $sodiumCompatIsntSlow = $this->sodiumCompatIsntSlow();
         if (\is_null($checkEd25519Signature)) {
-            $checkEd25519Signature = (bool) static::CHECK_SIGNATURE_BY_DEFAULT;
+            $checkEd25519Signature = (bool) (static::CHECK_SIGNATURE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
         if (\is_null($checkChronicle)) {
-            $checkChronicle = (bool) static::CHECK_CHRONICLE_BY_DEFAULT;
+            $checkChronicle = (bool) (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
 
         /** @var Bundle $bundle */
@@ -136,5 +137,19 @@ class Fetch
         }
         \krsort($bundles);
         return $bundles;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function sodiumCompatIsntSlow()
+    {
+        if (\extension_loaded('sodium')) {
+            return true;
+        }
+        if (\extension_loaded('libsodium')) {
+            return true;
+        }
+        return PHP_INT_SIZE !== 4;
     }
 }
