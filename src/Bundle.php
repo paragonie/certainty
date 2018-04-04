@@ -95,6 +95,19 @@ class Bundle
 
     /**
      * @return string
+     * @throws FilesystemException
+     */
+    public function getFileContents()
+    {
+        $contents = \file_get_contents($this->filePath);
+        if (!\is_string($contents)) {
+            throw new FilesystemException('Could not read file ' . $this->filePath);
+        }
+        return (string) $contents;
+    }
+
+    /**
+     * @return string
      */
     public function getFilePath()
     {

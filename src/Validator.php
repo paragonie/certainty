@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use ParagonIE\Certainty\Exception\CryptoException;
 use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\InvalidResponseException;
 use ParagonIE\Certainty\Exception\RemoteException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
@@ -53,11 +54,23 @@ class Validator
         } else {
             $publicKey = Hex::decode(static::PRIMARY_SIGNING_PUBKEY);
         }
+
+        try {
+            return \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
+                $bundle->getSignature(true),
+                $bundle->getFileContents(),
+                $publicKey
+            );
+        } catch (FilesystemException $ex) {
+            return false;
+        }
+        /*
         return \ParagonIE_Sodium_File::verify(
             $bundle->getSignature(true),
             $bundle->getFilePath(),
             $publicKey
         );
+        */
     }
 
     /**
