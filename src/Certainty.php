@@ -15,7 +15,9 @@ class Certainty
 
     /**
      * @param Fetch|null $fetch
+     *
      * @return Client
+     * @throws Exception\BundleException
      */
     public static function getGuzzleClient(Fetch $fetch = null)
     {

@@ -130,7 +130,6 @@ class LocalCACertBuilder extends Bundle
             return '';
         }
 
-        /** @var string $body */
         $body = \json_encode(
             [
                 'repository' => $this->chronicleRepoName,
@@ -172,7 +171,6 @@ class LocalCACertBuilder extends Bundle
             throw new InvalidResponseException('No valid signature for Chronicle response.');
         }
 
-        /** @var array $json */
         $json = \json_decode($responseBody, true);
         if (!\is_array($json)) {
             return '';
@@ -282,11 +280,7 @@ class LocalCACertBuilder extends Bundle
     public function setChronicle($url = '', $publicKey = '', $clientId = '', $repository = 'paragonie/certainty')
     {
         if (\ParagonIE_Sodium_Core_Util::strlen($publicKey) === 64) {
-            /** @var string $publicKey */
             $publicKey = Hex::decode($publicKey);
-            if (!\is_string($publicKey)) {
-                throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
-            }
         } elseif (\ParagonIE_Sodium_Core_Util::strlen($publicKey) !== 32) {
             throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.');
         }
@@ -354,11 +348,7 @@ class LocalCACertBuilder extends Bundle
     {
         // Handle hex-encoded strings.
         if (\ParagonIE_Sodium_Core_Util::strlen($secretKey) === 128) {
-            /** @var string $secretKey */
             $secretKey = Hex::decode($secretKey);
-            if (!\is_string($secretKey)) {
-                throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
-            }
         } elseif (\ParagonIE_Sodium_Core_Util::strlen($secretKey) !== 64) {
             throw new CryptoException('Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.');
         }

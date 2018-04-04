@@ -46,6 +46,7 @@ class Validator
      * @param Bundle $bundle  Which bundle to validate
      * @param bool $backupKey Use the backup key? (Only if the primary is compromised.)
      * @return bool
+     * @throws \SodiumException
      */
     public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {
@@ -116,11 +117,7 @@ class Validator
         $sigValid = false;
         foreach ($response->getHeader(Certainty::ED25519_HEADER) as $header) {
             // Don't catch exceptions here:
-            /** @var string $signature */
             $signature = Base64UrlSafe::decode($header);
-            if (!\is_string($signature)) {
-                throw new EncodingException('Signature invalid');
-            }
             $sigValid = $sigValid || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
                 (string) $signature,
                 (string) $body,
@@ -166,6 +163,7 @@ class Validator
      * @return bool
      * @throws CryptoException
      * @throws InvalidResponseException
+     * @throws \SodiumException
      */
     protected static function validateChronicleContents(Bundle $bundle, array $result = [])
     {

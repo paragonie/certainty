@@ -44,6 +44,10 @@ class Fetch
      *                                         inside a Chronicle instance?
      * @return Bundle
      * @throws BundleException
+     * @throws EncodingException
+     * @throws Exception\RemoteException
+     * @throws FilesystemException
+     * @throws \SodiumException
      */
     public function getLatestBundle($checkEd25519Signature = null, $checkChronicle = null)
     {
@@ -88,6 +92,9 @@ class Fetch
      *
      * @param string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
+     *
+     * @throws EncodingException
+     * @throws FilesystemException
      */
     public function getAllBundles($customValidator = '')
     {
@@ -99,7 +106,9 @@ class Fetch
      *
      * @param string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
-     * @throws \Exception
+     *
+     * @throws EncodingException
+     * @throws FilesystemException
      */
     protected function listBundles($customValidator = '')
     {

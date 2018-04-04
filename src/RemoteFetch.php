@@ -3,6 +3,7 @@ namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
 use ParagonIE\Certainty\Exception\EncodingException;
+use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\NetworkException;
 
 /**
@@ -40,7 +41,11 @@ class RemoteFetch extends Fetch
      * @param string $url
      * @param Client|null $http
      * @param \DateInterval|string|null $timeout
+     *
+     * @throws Exception\BundleException
+     * @throws \Exception
      * @throws \TypeError
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function __construct(
         $dataDir = '',
@@ -85,7 +90,6 @@ class RemoteFetch extends Fetch
         if (!\file_exists($this->dataDirectory . '/ca-certs.cache')) {
             return true;
         }
-        /** @var string $cacheTime */
         $cacheTime = \file_get_contents($this->dataDirectory . '/ca-certs.cache');
         if (!\is_string($cacheTime)) {
             return true;
@@ -99,6 +103,8 @@ class RemoteFetch extends Fetch
      *
      * @param string $customValidator
      * @return array<int, Bundle>
+     * @throws EncodingException
+     * @throws FilesystemException
      * @throws NetworkException
      */
     protected function listBundles($customValidator = '')
