@@ -8,11 +8,17 @@ use PHPUnit\Framework\TestCase;
 
 class FetchTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    protected $defaultDir;
+
     /** @var string */
     protected $root;
 
     public function setUp()
     {
+        $this->defaultDir = dirname(__DIR__) . '/data';
         $this->root = __DIR__ . '/static/';
     }
 
@@ -66,7 +72,7 @@ class FetchTest extends TestCase
     {
         $this->assertInstanceOf(
             Bundle::class,
-            (new Fetch())->getLatestBundle(),
+            (new Fetch($this->defaultDir))->getLatestBundle(),
             'The live data directory has no valid signatures.'
         );
     }

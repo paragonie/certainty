@@ -8,11 +8,17 @@ use PHPUnit\Framework\TestCase;
 
 class BundleTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    protected $defaultDir;
+
     /** @var string $link */
     protected $link;
 
     public function setUp()
     {
+        $this->defaultDir = dirname(__DIR__) . '/data';
         $this->link = __DIR__ . '/static/symlink-test';
     }
 
@@ -37,7 +43,7 @@ class BundleTest extends TestCase
             return;
         }
 
-        $latest = (new Fetch())->getLatestBundle();
+        $latest = (new Fetch($this->defaultDir))->getLatestBundle();
 
         $latest->createSymlink($this->link, true);
 
@@ -55,7 +61,7 @@ class BundleTest extends TestCase
      */
     public function testGetters()
     {
-        $latest = (new Fetch())->getLatestBundle();
+        $latest = (new Fetch($this->defaultDir))->getLatestBundle();
         $this->assertTrue(\is_string($latest->getFilePath()));
         $this->assertTrue(\is_string($latest->getSha256Sum()));
         $this->assertTrue(\is_string($latest->getSignature()));

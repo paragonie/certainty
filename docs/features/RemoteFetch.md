@@ -12,7 +12,7 @@ Using the `RemoteFetch` class is rather straightforward.
 <?php
 use ParagonIE\Certainty\RemoteFetch;
 
-$fetcher = new RemoteFetch();
+$fetcher = new RemoteFetch('/path/to/certainty/data');
 $latestCACertBundle = $fetcher->getLatestBundle();
 
 $ch = curl_init();
@@ -28,7 +28,7 @@ curl_setopt($ch, CURLOPT_CAINFO, $latestCACertBundle->getFilePath());
 use ParagonIE\Certainty\RemoteFetch;
 use GuzzleHttp\Client;
 
-$fetcher = new RemoteFetch();
+$fetcher = new RemoteFetch('/path/to/certainty/data');
 $latestCACertBundle = $fetcher->getLatestBundle();
 $client = new Client();
 
@@ -43,7 +43,7 @@ $response = $client->request('POST', '/url', [
 <?php
 use ParagonIE\Certainty\RemoteFetch;
 
-$fetcher = new RemoteFetch();
+$fetcher = new RemoteFetch('/path/to/certainty/data');
 $latestCACertBundle = $fetcher->getLatestBundle();
 
 $context = stream_context_create([
@@ -93,12 +93,12 @@ object has been created.
 use ParagonIE\Certainty\RemoteFetch;
 
 // Cleaner.
-$fetcher = (new RemoteFetch())
+$fetcher = (new RemoteFetch('/path/to/certainty/data'))
     ->setCacheTimeout(new \DateInterval('PT06H'));
 
 // Alternatively, the constructor approach:
 $fetcher = new RemoteFetch(
-    '',   // use the default save path
+    '/path/to/certainty/data',
     RemoteFetch::DEFAULT_URL,
     null, // automatically selects/configures Guzzle
     new \DateInterval('PT06H') // 6 hours
@@ -117,7 +117,7 @@ Certainty supports this usage.
 <?php
 use ParagonIE\Certainty\RemoteFetch;
 
-$latest = (new RemoteFetch())->getLatestBundle();
+$latest = (new RemoteFetch('/path/to/certainty/data'))->getLatestBundle();
 
 $latest->createSymlink('/path/to/cacert.pem', true);
 ```

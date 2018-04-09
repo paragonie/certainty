@@ -13,6 +13,16 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomCASupportTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    protected $defaultDir;
+
+    public function setUp()
+    {
+        $this->defaultDir = dirname(__DIR__) . '/data';
+    }
+
     public function tearDown()
     {
         \unlink(__DIR__ . '/static/combined.pem');
@@ -31,7 +41,7 @@ class CustomCASupportTest extends TestCase
         $validator = new CustomValidator();
         $validator::setPublicKey(Hex::encode($publicKey));
 
-        $latest = (new Fetch())->getLatestBundle();
+        $latest = (new Fetch($this->defaultDir))->getLatestBundle();
         LocalCACertBuilder::fromBundle($latest)
             ->setCustomValidator(CustomValidator::class)
             ->setOutputPemFile(__DIR__ . '/static/combined.pem')

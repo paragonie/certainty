@@ -62,7 +62,7 @@ use ParagonIE\Certainty\LocalCACertBuilder;
 use ParagonIE\Certainty\RemoteFetch;
 use ParagonIE\ConstantTime\Hex;
 
-$latest = (new RemoteFetch())->getLatestBundle();
+$latest = (new RemoteFetch('/path/to/certainty/data'))->getLatestBundle();
 
 LocalCACertBuilder::fromBundle($latest)
     ->setSigningKey(Hex::decode('your hex-encoded secret key goes here'))
@@ -90,7 +90,7 @@ use ParagonIE\Certainty\LocalCACertBuilder;
 use ParagonIE\Certainty\RemoteFetch;
 use ParagonIE\ConstantTime\Hex;
 
-$latest = (new RemoteFetch())->getLatestBundle();
+$latest = (new RemoteFetch('/path/to/certainty/data'))->getLatestBundle();
 
 /* This snippet is mostly identical from the previous one. */
 LocalCACertBuilder::fromBundle($latest)

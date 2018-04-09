@@ -25,14 +25,15 @@ class Fetch
      * You almost certainly want to use RemoteFetch instead.
      *
      * @param string $dataDir Where the certificates and configuration lives
+     *
+     * @throws FilesystemException
      */
-    public function __construct($dataDir = '')
+    public function __construct($dataDir)
     {
-        if (!empty($dataDir) && \is_readable($dataDir)) {
-            $this->dataDirectory = $dataDir;
-        } else {
-            $this->dataDirectory = \dirname(__DIR__) . '/data';
+        if (!\is_readable($dataDir)) {
+            throw new FilesystemException('Directory is not readable: ' . $dataDir);
         }
+        $this->dataDirectory = $dataDir;
     }
 
     /**
