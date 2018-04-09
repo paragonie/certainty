@@ -25,7 +25,7 @@ class Certainty
      */
     public static function getGuzzleClient(Fetch $fetch = null)
     {
-        $options = [];
+        $options = ['verify' => true];
         if (!\is_null($fetch)) {
             try {
                 $options['verify'] = $fetch->getLatestBundle()->getFilePath();
