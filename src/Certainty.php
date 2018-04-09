@@ -2,6 +2,7 @@
 namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
+use ParagonIE\Certainty\Exception\BundleException;
 
 /**
  * Class Certainty
@@ -17,7 +18,6 @@ class Certainty
      * @param Fetch|null $fetch
      *
      * @return Client
-     * @throws Exception\BundleException
      * @throws Exception\EncodingException
      * @throws Exception\FilesystemException
      * @throws Exception\RemoteException
@@ -27,7 +27,11 @@ class Certainty
     {
         $options = [];
         if (!\is_null($fetch)) {
-            $options['verify'] = $fetch->getLatestBundle()->getFilePath();
+            try {
+                $options['verify'] = $fetch->getLatestBundle()->getFilePath();
+            } catch (BundleException $ex) {
+                // Fail closed just for usability. We're verifying anyway.
+            }
         }
 
         if (\defined('CURLOPT_SSLVERSION') && \defined('CURL_SSLVERSION_TLSv1_2') && \defined('CURL_SSLVERSION_TLSv1')) {
