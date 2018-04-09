@@ -187,6 +187,7 @@ class RemoteFetch extends Fetch
     }
 
     /**
+     *
      * @param string $url
      * @return self
      */
