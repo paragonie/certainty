@@ -10,6 +10,7 @@ use ParagonIE\Certainty\Exception\InvalidResponseException;
 use ParagonIE\Certainty\Exception\RemoteException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
+use ParagonIE_Sodium_Core_Util as SodiumUtil;
 
 /**
  * Class Validator
@@ -37,7 +38,11 @@ class Validator
     public static function checkSha256Sum(Bundle $bundle)
     {
         $sha256sum = \hash_file('sha256', $bundle->getFilePath(), true);
-        return \hash_equals($bundle->getSha256Sum(true), $sha256sum);
+        try {
+            return SodiumUtil::hashEquals($bundle->getSha256Sum(true), $sha256sum);
+        } catch (\SodiumException $ex) {
+            return false;
+        }
     }
 
     /**
@@ -137,7 +142,12 @@ class Validator
         }
 
         // If the status was successful,
-        if (!\hash_equals('OK', $json['status'])) {
+        try {
+            $ok = SodiumUtil::hashEquals('OK', $json['status']);
+        } catch (\SodiumException $ex) {
+            $ok = false;
+        }
+        if (!$ok) {
             if (self::THROW_MORE_EXCEPTIONS) {
                 if (isset($json['error'])) {
                     throw new RemoteException($json['error']);
@@ -178,9 +188,15 @@ class Validator
             (string) Base64UrlSafe::decode($result['publickey'])
         );
         if (
-            !\hash_equals(static::PRIMARY_SIGNING_PUBKEY, $publicKey)
+            !SodiumUtil::hashEquals(
+                (string) static::PRIMARY_SIGNING_PUBKEY,
+                (string) $publicKey
+            )
                 &&
-            !\hash_equals(static::BACKUP_SIGNING_PUBKEY, $publicKey)
+            !SodiumUtil::hashEquals(
+                (string) static::BACKUP_SIGNING_PUBKEY,
+                (string) $publicKey
+            )
         ) {
             // This was not one of our keys.
             return false;
