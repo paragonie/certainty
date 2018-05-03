@@ -62,6 +62,8 @@ class LocalCACertBuilder extends Bundle
     /**
      * @param Bundle $old
      * @return self
+     *
+     * @throws \Exception
      */
     public static function fromBundle(Bundle $old)
     {
