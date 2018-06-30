@@ -1,5 +1,12 @@
 [
   {
+    "chronicle": "EBF8N4OMJRr_GnDrP0A27d7hTF0Tbf2FMfgR2Wl7Uy0=",
+    "date": "2018-06-20",
+    "file": "cacert-2018-06-20.pem",
+    "sha256": "238823cd92d3bcdd67c1c278536d6c282dd6b526ee6ee97efbf00ef31d8c5d79",
+    "signature": "fd37524d4635ca88cf0ddf0493f6eec7ba0981b291aaac63b25a21a77721fadcda9ce4f9316f7f13b94e2869df55d4f1c07901bb8b84484bee6d10cadb33a104"
+  },
+  {
     "chronicle": "Jmto9HgxYETn-1JA6YVjDEs7OyjY_bffb2kfy-AGM2E=",
     "date": "2018-03-07",
     "file": "cacert-2018-03-07.pem",
