@@ -3,8 +3,8 @@ namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\EncodingException;
-use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\NetworkException;
 
 /**
@@ -43,10 +43,9 @@ class RemoteFetch extends Fetch
      * @param Client|null $http
      * @param \DateInterval|string|null $timeout
      *
-     * @throws Exception\BundleException
-     * @throws \Exception
+     * @throws CertaintyException
+     * @throws \SodiumException
      * @throws \TypeError
-     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function __construct(
         $dataDir = '',
@@ -69,9 +68,17 @@ class RemoteFetch extends Fetch
 
         if (\is_null($timeout)) {
             /* Default: 24 hours */
-            $timeoutObj = new \DateInterval('P01D');
+            try {
+                $timeoutObj = new \DateInterval('P01D');
+            } catch (\Exception $ex) {
+                throw new CertaintyException('Invalid DateInterval', 0, $ex);
+            }
         } elseif (\is_string($timeout)) {
-            $timeoutObj = new \DateInterval($timeout);
+            try {
+                $timeoutObj = new \DateInterval($timeout);
+            } catch (\Exception $ex) {
+                throw new CertaintyException('Invalid DateInterval', 0, $ex);
+            }
         } elseif ($timeout instanceof \DateInterval) {
             $timeoutObj = $timeout;
         } else {
@@ -106,9 +113,7 @@ class RemoteFetch extends Fetch
      * @param string $trustChannel
      *
      * @return array<int, Bundle>
-     * @throws EncodingException
-     * @throws FilesystemException
-     * @throws NetworkException
+     * @throws CertaintyException
      */
     protected function listBundles(
         $customValidator = '',

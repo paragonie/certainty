@@ -2,7 +2,7 @@
 <psalm
     name="Certainty Psalm Rules"
     useDocblockTypes="true"
-    totallyTyped="false"
+    totallyTyped="true"
 >
     <projectFiles>
         <directory name="src" />

@@ -2,7 +2,6 @@
 namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
-use ParagonIE\Certainty\Exception\BundleException;
 use ParagonIE\Certainty\Exception\CertaintyException;
 
 /**
@@ -20,7 +19,6 @@ class Certainty
      * @param Fetch|null $fetch
      *
      * @return Client
-     * @throws CertaintyException
      * @throws \SodiumException
      */
     public static function getGuzzleClient(Fetch $fetch = null)
@@ -29,7 +27,7 @@ class Certainty
         if (!\is_null($fetch)) {
             try {
                 $options['verify'] = $fetch->getLatestBundle()->getFilePath();
-            } catch (BundleException $ex) {
+            } catch (CertaintyException $ex) {
                 // Fail closed just for usability. We're verifying anyway.
             }
         }

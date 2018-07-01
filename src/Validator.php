@@ -4,9 +4,9 @@ namespace ParagonIE\Certainty;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Response;
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\CryptoException;
 use ParagonIE\Certainty\Exception\EncodingException;
-use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\InvalidResponseException;
 use ParagonIE\Certainty\Exception\RemoteException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
@@ -69,7 +69,7 @@ class Validator
                 $bundle->getFileContents(),
                 $publicKey
             );
-        } catch (FilesystemException $ex) {
+        } catch (CertaintyException $ex) {
             return false;
         }
         /*
