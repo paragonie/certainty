@@ -60,6 +60,11 @@ class LocalCACertBuilder extends Bundle
     protected $secretKey = '';
 
     /**
+     * @var string $trustChannel
+     */
+    protected $trustChannel = Certainty::TRUST_DEFAULT;
+
+    /**
      * @param Bundle $old
      * @return self
      *
@@ -73,6 +78,7 @@ class LocalCACertBuilder extends Bundle
             $old->getSignature()
         );
         $new->customValidator = $old->getValidator();
+        $new->trustChannel = $old->getTrustChannel();
         return $new;
     }
 
@@ -249,7 +255,8 @@ class LocalCACertBuilder extends Bundle
             'date' => \date('Y-m-d'),
             'file' => \array_pop($pieces),
             'sha256' => $sha256sum,
-            'signature' => Hex::encode($signature)
+            'signature' => Hex::encode($signature),
+            'trust-channel' => $this->trustChannel
         ];
 
         $chronicleHash = $this->commitToChronicle($sha256sum, $signature);

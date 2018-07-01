@@ -39,6 +39,11 @@ class Bundle
     protected $signature = '';
 
     /**
+     * @var string $trustChannel
+     */
+    protected $trustChannel = Certainty::TRUST_DEFAULT;
+
+    /**
      * Bundle constructor.
      *
      * @param string $filePath        Path to the CACert bundle
@@ -73,6 +78,7 @@ class Bundle
             $newClass = new Validator();
         }
         $this->customValidator = $newClass;
+        $this->trustChannel = $trustChannel;
     }
 
     /**
@@ -144,6 +150,14 @@ class Bundle
             return Hex::decode($this->signature);
         }
         return $this->signature;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrustChannel()
+    {
+        return $this->trustChannel;
     }
 
     /**
