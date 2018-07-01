@@ -46,6 +46,7 @@ class RemoteFetch extends Fetch
      * @throws CertaintyException
      * @throws \SodiumException
      * @throws \TypeError
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function __construct(
         $dataDir = '',

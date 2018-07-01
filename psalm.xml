@@ -10,19 +10,5 @@
 
     <issueHandlers>
         <RedundantConditionGivenDocblockType errorLevel="info" />
-        <LessSpecificReturnType errorLevel="info" />
-
-        <!-- level 3 issues - slightly lazy code writing, but provably low false-negatives -->
-        <DeprecatedMethod errorLevel="info" />
-
-        <MissingClosureReturnType errorLevel="info" />
-        <MissingReturnType errorLevel="info" />
-        <MissingPropertyType errorLevel="info" />
-        <InvalidDocblock errorLevel="info" />
-        <MisplacedRequiredParam errorLevel="info" />
-
-        <PropertyNotSetInConstructor errorLevel="info" />
-        <MissingConstructor errorLevel="info" />
-        <UntypedParam errorLevel="info" />
     </issueHandlers>
 </psalm>

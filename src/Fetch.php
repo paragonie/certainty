@@ -168,6 +168,8 @@ class Fetch
 
     /**
      * @return bool
+     *
+     * @psalm-suppress RedundantCondition PHP_INT_SIZE is env-specific
      */
     protected function sodiumCompatIsntSlow()
     {
