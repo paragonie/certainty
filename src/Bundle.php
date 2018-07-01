@@ -46,6 +46,7 @@ class Bundle
      * @param string $signature       Hex-encoded string
      * @param string $customValidator Fully-Qualified Class Name
      * @param string $chronicleHash   Chronicle Hash
+     * @param string $trustChannel    Default trust channel for this bundle
      * @throws \TypeError
      */
     public function __construct(
@@ -53,7 +54,8 @@ class Bundle
         $sha256sum = '',
         $signature = '',
         $customValidator = '',
-        $chronicleHash = ''
+        $chronicleHash = '',
+        $trustChannel = Certainty::TRUST_DEFAULT
     ) {
         $this->filePath = $filePath;
         $this->sha256sum = $sha256sum;

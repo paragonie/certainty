@@ -15,6 +15,11 @@ class Fetch
     const CHECK_CHRONICLE_BY_DEFAULT = false;
 
     /**
+     * @var string $trustChannel
+     */
+    protected $trustChannel = Certainty::TRUST_DEFAULT;
+
+    /**
      * @var string $dataDirectory
      */
     protected $dataDirectory = '';
@@ -61,7 +66,7 @@ class Fetch
         }
 
         /** @var Bundle $bundle */
-        foreach ($this->listBundles() as $bundle) {
+        foreach ($this->listBundles('', $this->trustChannel) as $bundle) {
             if ($bundle->hasCustom()) {
                 $validator = $bundle->getValidator();
             } else {
@@ -99,20 +104,28 @@ class Fetch
      */
     public function getAllBundles($customValidator = '')
     {
-        return \array_values($this->listBundles($customValidator));
+        return \array_values(
+            $this->listBundles(
+                $customValidator,
+                $this->trustChannel
+            )
+        );
     }
 
     /**
      * List bundles
      *
      * @param string $customValidator Fully-qualified class name for Validator
+     * @param string $trustChannel
      * @return array<int, Bundle>
      *
      * @throws EncodingException
      * @throws FilesystemException
      */
-    protected function listBundles($customValidator = '')
-    {
+    protected function listBundles(
+        $customValidator = '',
+        $trustChannel = Certainty::TRUST_DEFAULT
+    ) {
         if (!\file_exists($this->dataDirectory . '/ca-certs.json')) {
             throw new FilesystemException('ca-certs.json not found in data directory.');
         }
@@ -129,8 +142,12 @@ class Fetch
         }
         $bundles = [];
         foreach ($data as $row) {
-            if (!isset($row['date'], $row['file'], $row['sha256'], $row['signature'])) {
+            if (!isset($row['date'], $row['file'], $row['sha256'], $row['signature'], $row['trust-channel'])) {
                 // The necessary keys are not defined.
+                continue;
+            }
+            if ($row['trust-channel'] !== $trustChannel) {
+                // Only include these.
                 continue;
             }
             $key = (int) (\preg_replace('/[^0-9]/', '', $row['date']) . '0000');
@@ -142,7 +159,8 @@ class Fetch
                 $row['sha256'],
                 $row['signature'],
                 !empty($row['custom']) ? $row['custom'] : $customValidator,
-                isset($row['chronicle']) ? $row['chronicle'] : ''
+                isset($row['chronicle']) ? $row['chronicle'] : '',
+                $trustChannel
             );
         }
         \krsort($bundles);

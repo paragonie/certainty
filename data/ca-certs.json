@@ -4,48 +4,55 @@
     "date": "2018-06-20",
     "file": "cacert-2018-06-20.pem",
     "sha256": "238823cd92d3bcdd67c1c278536d6c282dd6b526ee6ee97efbf00ef31d8c5d79",
-    "signature": "fd37524d4635ca88cf0ddf0493f6eec7ba0981b291aaac63b25a21a77721fadcda9ce4f9316f7f13b94e2869df55d4f1c07901bb8b84484bee6d10cadb33a104"
+    "signature": "fd37524d4635ca88cf0ddf0493f6eec7ba0981b291aaac63b25a21a77721fadcda9ce4f9316f7f13b94e2869df55d4f1c07901bb8b84484bee6d10cadb33a104",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "Jmto9HgxYETn-1JA6YVjDEs7OyjY_bffb2kfy-AGM2E=",
     "date": "2018-03-07",
     "file": "cacert-2018-03-07.pem",
     "sha256": "79ea479e9f329de7075c40154c591b51eb056d458bc4dff76d9a4b9c6c4f6d0b",
-    "signature": "06dc96f0bc32ee82eb7611ac7fe0bfa646fd4139a65fe7999a404377e4b4a3272f74c509c1cbb1a6f509c8c7d438e79e95982b1f992c7fc6071d99e6f103680c"
+    "signature": "06dc96f0bc32ee82eb7611ac7fe0bfa646fd4139a65fe7999a404377e4b4a3272f74c509c1cbb1a6f509c8c7d438e79e95982b1f992c7fc6071d99e6f103680c",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "HuICLQCF_DWnQGbosC6fK8PuifQgIrRi2WYshB2erZY=",
     "date": "2018-01-17",
     "file": "cacert-2018-01-17.pem",
     "sha256": "defe310a0184a12e4b1b3d147f1d77395dd7a09e3428373d019bef5d542ceba3",
-    "signature": "de2bb6e94f46c13eb52d8cd561d456367f0abe1ed0799eb9347ad2047c1d6bacebf275d42b4c5188231d76fcc5904e483c4bef0d41ca791448b23269b1b67d05"
+    "signature": "de2bb6e94f46c13eb52d8cd561d456367f0abe1ed0799eb9347ad2047c1d6bacebf275d42b4c5188231d76fcc5904e483c4bef0d41ca791448b23269b1b67d05",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "pTmauXUmQrr2BN8uJX3mCKk0GSokHl61qHUrXsUFziE=",
     "date": "2017-09-20",
     "file": "cacert-2017-09-20.pem",
     "sha256": "435ac8e816f5c10eaaf228d618445811c16a5e842e461cb087642b6265a36856",
-    "signature": "9007f7f0411d6d1f1f5136b247375e614a24216e4fc6c9d6d12642f986f3d45cea3daa2a19705579845a37488ce679f78a1b890d24da6157a2e9894d351fa70a"
+    "signature": "9007f7f0411d6d1f1f5136b247375e614a24216e4fc6c9d6d12642f986f3d45cea3daa2a19705579845a37488ce679f78a1b890d24da6157a2e9894d351fa70a",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "tUgevWspRLIznoIx0G6XRMucU4XJSBV3qYZEPWovZV8=",
     "date": "2017-06-07",
     "file": "cacert-2017-06-07.pem",
     "sha256": "e78c8ab7b4432bd466e64bb942d988f6c0ac91cd785017e465bdc96d42fe9dd0",
-    "signature": "ed1fc6af6827cac04da6caf40deffeadc2a19feba5281d7cf92d1563ad9af49b8d25bf459e5d5acec0fe723394f88f240d4b716e52f3835f9ab3caa3cc85380e"
+    "signature": "ed1fc6af6827cac04da6caf40deffeadc2a19feba5281d7cf92d1563ad9af49b8d25bf459e5d5acec0fe723394f88f240d4b716e52f3835f9ab3caa3cc85380e",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "vkGXMsFKfLlQBh3uYUQbLFdXKgQe5huy-pZZ-9cIDJ4=",
     "date": "2017-01-18",
     "file": "cacert-2017-01-18.pem",
     "sha256": "e62a07e61e5870effa81b430e1900778943c228bd7da1259dd6a955ee2262b47",
-    "signature": "0f217f29c9711cd74ed60f0f6da886c166969945546a6e75e6fa8cf5ea87387f5fce1e1ced71af46095d2dd411a3676ec1aa40927cc0d47a91adaeef965b240b"
+    "signature": "0f217f29c9711cd74ed60f0f6da886c166969945546a6e75e6fa8cf5ea87387f5fce1e1ced71af46095d2dd411a3676ec1aa40927cc0d47a91adaeef965b240b",
+    "trust-channel": "Mozilla"
   },
   {
     "chronicle": "5dmkHGPHwnIOawjmnrbXBIXap92GqF2aDraASC12AVM=",
     "date": "2016-11-02",
     "file": "cacert-2016-11-02.pem",
     "sha256": "cc7c9e2d259e20b72634371b146faec98df150d18dd9da9ad6ef0b2deac2a9d3",
-    "signature": "59687e4a471591fd09f2e9d84a595fd37618eadf0c4a3eef56feaca10100a175da520dbd068473189af3775ca91e1f48eb55155accb9d5c6137d25b6a9e93103"
+    "signature": "59687e4a471591fd09f2e9d84a595fd37618eadf0c4a3eef56feaca10100a175da520dbd068473189af3775ca91e1f48eb55155accb9d5c6137d25b6a9e93103",
+    "trust-channel": "Mozilla"
   }
 ]
