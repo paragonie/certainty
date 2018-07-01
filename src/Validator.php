@@ -3,6 +3,7 @@ namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Psr7\Response;
 use ParagonIE\Certainty\Exception\CryptoException;
 use ParagonIE\Certainty\Exception\EncodingException;
 use ParagonIE\Certainty\Exception\FilesystemException;
@@ -55,10 +56,11 @@ class Validator
      */
     public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {
+        /** @var string $publicKey */
         if ($backupKey) {
-            $publicKey = Hex::decode(static::BACKUP_SIGNING_PUBKEY);
+            $publicKey = Hex::decode((string) static::BACKUP_SIGNING_PUBKEY);
         } else {
-            $publicKey = Hex::decode(static::PRIMARY_SIGNING_PUBKEY);
+            $publicKey = Hex::decode((string) static::PRIMARY_SIGNING_PUBKEY);
         }
 
         try {
@@ -100,15 +102,17 @@ class Validator
             return false;
         }
         // Inherited classes can override this.
-        $chronicleUrl = static::CHRONICLE_URL;
+        /** @var string $chronicleUrl */
+        $chronicleUrl = (string) static::CHRONICLE_URL;
 
         /** @var string $publicKey */
-        $publicKey = Base64UrlSafe::decode(static::CHRONICLE_PUBKEY);
+        $publicKey = Base64UrlSafe::decode((string) static::CHRONICLE_PUBKEY);
 
         /** @var Client $guzzle */
         $guzzle = Certainty::getGuzzleClient();
 
         // We could catch the ConnectException, but let's not.
+        /** @var Response $response */
         $response = $guzzle->get(
             \rtrim($chronicleUrl, '/') .
             '/lookup/' .
@@ -120,7 +124,12 @@ class Validator
 
         // Signature validation phase:
         $sigValid = false;
-        foreach ($response->getHeader(Certainty::ED25519_HEADER) as $header) {
+
+        /** @var array<string, string> $sigHeaders */
+        $sigHeaders = $response->getHeader(Certainty::ED25519_HEADER);
+
+        /** @var string $header */
+        foreach ($sigHeaders as $header) {
             // Don't catch exceptions here:
             $signature = Base64UrlSafe::decode($header);
             $sigValid = $sigValid || \ParagonIE_Sodium_Compat::crypto_sign_verify_detached(
@@ -136,21 +145,26 @@ class Validator
             // No valid signatures
             return false;
         }
+        /** @var array<string, mixed>|bool $json */
         $json = \json_decode($body, true);
         if (!\is_array($json)) {
             throw new EncodingException('Invalid JSON response');
         }
 
+        /** @var string $status */
+        $jsonStatus = (string) $json['status'];
         // If the status was successful,
         try {
-            $ok = SodiumUtil::hashEquals('OK', $json['status']);
+            $ok = SodiumUtil::hashEquals('OK', $jsonStatus);
         } catch (\SodiumException $ex) {
             $ok = false;
         }
         if (!$ok) {
             if (self::THROW_MORE_EXCEPTIONS) {
                 if (isset($json['error'])) {
-                    throw new RemoteException($json['error']);
+                    /** @var string $jsonError */
+                    $jsonError = $json['error'];
+                    throw new RemoteException($jsonError);
                 }
                 throw new RemoteException('Invalid status returned by the API');
             }
@@ -159,7 +173,10 @@ class Validator
 
         // Make sure our sha256sum is present somewhere in the results
         $hashValid = false;
-        foreach ($json['results'] as $results) {
+        /** @var array<string, array> $jsonResults */
+        $jsonResults = $json['results'];
+        foreach ($jsonResults as $results) {
+            /** @var array<string, string> $results */
             $hashValid = $hashValid || static::validateChronicleContents($bundle, $results);
         }
         return $hashValid;
@@ -169,7 +186,7 @@ class Validator
      * Actually validates the contents of a Chronicle entry.
      *
      * @param Bundle $bundle
-     * @param array $result  Chronicle API response (post signature validation)
+     * @param array<string, string> $result  Chronicle API response (post signature validation)
      * @return bool
      * @throws CryptoException
      * @throws InvalidResponseException
@@ -184,6 +201,7 @@ class Validator
             // Incomplete data.
             return false;
         }
+        /** @var string $publicKey */
         $publicKey = (string) Hex::encode(
             (string) Base64UrlSafe::decode($result['publickey'])
         );
