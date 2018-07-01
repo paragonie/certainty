@@ -2,6 +2,7 @@
 namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use ParagonIE\Certainty\Exception\EncodingException;
 use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\NetworkException;
@@ -129,8 +130,11 @@ class RemoteFetch extends Fetch
      */
     protected function remoteFetchBundles()
     {
+        /** @var Request $request */
         $request = $this->http->get($this->url . '/ca-certs.json');
+        /** @var string $body */
         $body = (string) $request->getBody();
+        /** @var array|bool $jsonDecoded */
         $jsonDecoded = \json_decode($body, true);
         if (!\is_array($jsonDecoded)) {
             throw new EncodingException(\json_last_error_msg());
@@ -144,6 +148,9 @@ class RemoteFetch extends Fetch
         }
         \file_put_contents($this->dataDirectory . '/ca-certs.json', $body);
 
+        /**
+         * @var array<string, string> $item
+         */
         foreach ($jsonDecoded as $item) {
             if (!isset($item['file'])) {
                 continue;
@@ -154,7 +161,9 @@ class RemoteFetch extends Fetch
                 continue;
             }
             if (!\file_exists($this->dataDirectory . '/' . $filename)) {
+                /** @var Request $request */
                 $request = $this->http->get($this->url . '/' . $filename);
+                /** @var string $body */
                 $body = (string) $request->getBody();
                 \file_put_contents($this->dataDirectory . '/' . $filename, $body);
             }

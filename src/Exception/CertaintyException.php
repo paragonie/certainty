@@ -2,10 +2,10 @@
 namespace ParagonIE\Certainty\Exception;
 
 /**
- * Class BundleException
+ * Class CertaintyException
  * @package ParagonIE\Certainty\Exception
  */
-class BundleException extends CertaintyException
+class CertaintyException extends \Exception
 {
 
 }

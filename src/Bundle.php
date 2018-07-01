@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\ConstantTime\Hex;
 
@@ -77,6 +78,7 @@ class Bundle
         if (!isset($newClass)) {
             $newClass = new Validator();
         }
+        /** @var Validator $newClass */
         $this->customValidator = $newClass;
         $this->trustChannel = $trustChannel;
     }
@@ -87,7 +89,7 @@ class Bundle
      * @param string $destination
      * @param bool $unlinkIfExists
      * @return bool
-     * @throws FilesystemException
+     * @throws CertaintyException
      */
     public function createSymlink($destination = '', $unlinkIfExists = false)
     {
@@ -103,7 +105,7 @@ class Bundle
 
     /**
      * @return string
-     * @throws FilesystemException
+     * @throws CertaintyException
      */
     public function getFileContents()
     {
@@ -174,12 +176,12 @@ class Bundle
      * Get the custom validator (assuming one is defined).
      *
      * @return Validator
-     * @throws \Exception
+     * @throws CertaintyException
      */
     public function getValidator()
     {
         if (!isset($this->customValidator)) {
-            throw new \Exception('Custom class not defined');
+            throw new CertaintyException('Custom class not defined');
         }
         return $this->customValidator;
     }

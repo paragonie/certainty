@@ -2,6 +2,7 @@
 namespace ParagonIE\Certainty;
 
 use ParagonIE\Certainty\Exception\BundleException;
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\EncodingException;
 use ParagonIE\Certainty\Exception\FilesystemException;
 
@@ -31,7 +32,7 @@ class Fetch
      *
      * @param string $dataDir Where the certificates and configuration lives
      *
-     * @throws FilesystemException
+     * @throws CertaintyException
      */
     public function __construct($dataDir)
     {
@@ -49,10 +50,8 @@ class Fetch
      * @param bool|null $checkChronicle        Require cert bundles be stored
      *                                         inside a Chronicle instance?
      * @return Bundle
-     * @throws BundleException
-     * @throws EncodingException
-     * @throws Exception\RemoteException
-     * @throws FilesystemException
+     *
+     * @throws CertaintyException
      * @throws \SodiumException
      */
     public function getLatestBundle($checkEd25519Signature = null, $checkChronicle = null)
@@ -99,8 +98,7 @@ class Fetch
      * @param string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
      *
-     * @throws EncodingException
-     * @throws FilesystemException
+     * @throws CertaintyException
      */
     public function getAllBundles($customValidator = '')
     {
@@ -119,8 +117,7 @@ class Fetch
      * @param string $trustChannel
      * @return array<int, Bundle>
      *
-     * @throws EncodingException
-     * @throws FilesystemException
+     * @throws CertaintyException
      */
     protected function listBundles(
         $customValidator = '',
@@ -136,11 +133,13 @@ class Fetch
         if (!\is_string($contents)) {
             throw new FilesystemException('ca-certs.json could not be read.');
         }
+        /** @var array|bool $data */
         $data = \json_decode($contents, true);
         if (!\is_array($data)) {
             throw new EncodingException('ca-certs.json is not a valid JSON file.');
         }
         $bundles = [];
+        /** @var array<string, string> $row */
         foreach ($data as $row) {
             if (!isset($row['date'], $row['file'], $row['sha256'], $row['signature'], $row['trust-channel'])) {
                 // The necessary keys are not defined.

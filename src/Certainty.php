@@ -3,6 +3,7 @@ namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
 use ParagonIE\Certainty\Exception\BundleException;
+use ParagonIE\Certainty\Exception\CertaintyException;
 
 /**
  * Class Certainty
@@ -19,9 +20,7 @@ class Certainty
      * @param Fetch|null $fetch
      *
      * @return Client
-     * @throws Exception\EncodingException
-     * @throws Exception\FilesystemException
-     * @throws Exception\RemoteException
+     * @throws CertaintyException
      * @throws \SodiumException
      */
     public static function getGuzzleClient(Fetch $fetch = null)
