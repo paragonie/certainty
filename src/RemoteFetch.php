@@ -102,19 +102,23 @@ class RemoteFetch extends Fetch
      * List bundles
      *
      * @param string $customValidator
+     * @param string $trustChannel
+     *
      * @return array<int, Bundle>
      * @throws EncodingException
      * @throws FilesystemException
      * @throws NetworkException
      */
-    protected function listBundles($customValidator = '')
-    {
+    protected function listBundles(
+        $customValidator = '',
+        $trustChannel = Certainty::TRUST_DEFAULT
+    ) {
         if ($this->cacheExpired()) {
             if (!$this->remoteFetchBundles()) {
                 throw new NetworkException('Could not download bundles');
             }
         }
-        return parent::listBundles($customValidator);
+        return parent::listBundles($customValidator, $trustChannel);
     }
 
     /**

@@ -13,6 +13,7 @@ class Certainty
     const REPOSITORY = 'paragonie/certainty';
     const CHRONICLE_CLIENT_ID = 'Chronicle-Client-Key-ID';
     const ED25519_HEADER = 'Body-Signature-Ed25519';
+    const TRUST_DEFAULT = 'Mozilla';
 
     /**
      * @param Fetch|null $fetch
