@@ -53,7 +53,7 @@ composer require paragonie/certainty:^2
 ```
 
 Certainty will keep certificates up to date via `RemoteFetch`, so you don't need to update
-Certainty library just to get fresh CA-Cert bundless. Update only for bugfixes (especially
+Certainty library just to get fresh CA-Cert bundles. Update only for bugfixes (especially
 security fixes) and new features.
 
 ### Non-Supported Use Case:
