@@ -1,10 +1,14 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
-
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\RemoteFetch;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class RemoteFetchTest
+ * @package ParagonIE\Certainty\Tests
+ */
 class RemoteFetchTest extends TestCase
 {
     /** @var string */
@@ -34,7 +38,9 @@ class RemoteFetchTest extends TestCase
     }
 
     /**
-     * @covers RemoteFetch
+     * @covers \ParagonIE\Certainty\RemoteFetch
+     * @throws CertaintyException
+     * @throws \SodiumException
      */
     public function testRemoteFetch()
     {

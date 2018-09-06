@@ -1,11 +1,16 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
-
+use ParagonIE\ConstantTime\Binary;
 use ParagonIE\Certainty\Bundle;
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Fetch;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class BundleTest
+ * @package ParagonIE\Certainty\Tests
+ */
 class BundleTest extends TestCase
 {
     /**
@@ -31,6 +36,8 @@ class BundleTest extends TestCase
 
     /**
      * @covers Bundle::createSymlink()
+     * @throws CertaintyException
+     * @throws \SodiumException
      */
     public function testCreateSymlink()
     {
@@ -58,6 +65,8 @@ class BundleTest extends TestCase
      * @covers Bundle::getFilePath()
      * @covers Bundle::getSha256Sum()
      * @covers Bundle::getSignature()
+     * @throws CertaintyException
+     * @throws \SodiumException
      */
     public function testGetters()
     {
@@ -68,9 +77,9 @@ class BundleTest extends TestCase
         $this->assertTrue(\is_string($latest->getSha256Sum(true)));
         $this->assertTrue(\is_string($latest->getSignature(true)));
 
-        $this->assertSame(64, \mb_strlen($latest->getSha256Sum(), '8bit'));
-        $this->assertSame(128, \mb_strlen($latest->getSignature(), '8bit'));
-        $this->assertSame(32, \mb_strlen($latest->getSha256Sum(true), '8bit'));
-        $this->assertSame(64, \mb_strlen($latest->getSignature(true), '8bit'));
+        $this->assertSame(64, Binary::safeStrlen($latest->getSha256Sum()));
+        $this->assertSame(128, Binary::safeStrlen($latest->getSignature()));
+        $this->assertSame(32, Binary::safeStrlen($latest->getSha256Sum(true)));
+        $this->assertSame(64, Binary::safeStrlen($latest->getSignature(true)));
     }
 }

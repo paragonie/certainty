@@ -1,6 +1,8 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
+use ParagonIE\Certainty\Exception\CertaintyException;
+use ParagonIE\Certainty\Exception\CryptoException;
 use ParagonIE\ConstantTime\Hex;
 use ParagonIE\Certainty\Fetch;
 use ParagonIE\Certainty\LocalCACertBuilder;
@@ -30,7 +32,11 @@ class CustomCASupportTest extends TestCase
     }
 
     /**
-     * @covers CustomValidator
+     * @covers \ParagonIE\Certainty\Tests\CustomValidator
+     *
+     * @throws CertaintyException
+     * @throws CryptoException
+     * @throws \SodiumException
      */
     public function testCustom()
     {

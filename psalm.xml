@@ -10,5 +10,6 @@
 
     <issueHandlers>
         <RedundantConditionGivenDocblockType errorLevel="info" />
+        <MixedAssignment errorLevel="info" />
     </issueHandlers>
 </psalm>

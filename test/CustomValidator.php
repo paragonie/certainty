@@ -31,6 +31,8 @@ class CustomValidator extends Validator
      * @param Bundle $bundle  Which bundle to validate
      * @param bool $backupKey Use the backup key? (Only if the primary is compromsied.)
      * @return bool
+     *
+     * @throws \SodiumException
      */
     public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {

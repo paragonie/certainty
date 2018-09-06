@@ -5,6 +5,10 @@ use ParagonIE\Certainty\Bundle;
 use ParagonIE\Certainty\Validator;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ValidatorTest
+ * @package ParagonIE\Certainty\Tests
+ */
 class ValidatorTest extends TestCase
 {
     /** @var Bundle $bundle */
@@ -27,11 +31,15 @@ class ValidatorTest extends TestCase
      */
     public function testSha256sum()
     {
-        $this->assertTrue(Validator::checkSha256Sum($this->bundle), 'Sha256sum of test case is wrong.');
+        $this->assertTrue(
+            Validator::checkSha256Sum($this->bundle),
+            'Sha256sum of test case is wrong.'
+        );
     }
 
     /**
      * @covers Validator::checkEd25519Signature()
+     * @throws \SodiumException
      */
     public function testEd25519()
     {

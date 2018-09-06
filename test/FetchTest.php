@@ -1,11 +1,15 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
-
 use ParagonIE\Certainty\Bundle;
+use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Fetch;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class FetchTest
+ * @package ParagonIE\Certainty\Tests
+ */
 class FetchTest extends TestCase
 {
     /**
@@ -23,7 +27,7 @@ class FetchTest extends TestCase
     }
 
     /**
-     * @covers Fetch
+     * @covers \ParagonIE\Certainty\Fetch
      */
     public function testEmptyDir()
     {
@@ -39,7 +43,8 @@ class FetchTest extends TestCase
     }
 
     /**
-     * @covers Fetch
+     * @covers \ParagonIE\Certainty\Fetch
+     * @throws
      */
     public function testEmptyJson()
     {
@@ -50,7 +55,7 @@ class FetchTest extends TestCase
     }
 
     /**
-     * @covers Fetch
+     * @covers \ParagonIE\Certainty\Fetch
      */
     public function testInvalid()
     {
@@ -66,7 +71,8 @@ class FetchTest extends TestCase
     }
 
     /**
-     *
+     * @throws CertaintyException
+     * @throws \SodiumException
      */
     public function testLiveDataDir()
     {
