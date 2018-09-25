@@ -61,7 +61,7 @@ class RemoteFetch extends Fetch
             if (\file_exists($this->dataDirectory . '/ca-certs.json')) {
                 $http = Certainty::getGuzzleClient(new Fetch($this->dataDirectory));
             } else {
-                $http = new Client();
+                $http = Certainty::getGuzzleClient(new Fetch(__DIR__."/../data/"));
             }
         }
         /** @var Client $http */

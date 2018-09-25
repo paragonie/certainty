@@ -109,7 +109,7 @@ class Validator
         $publicKey = Base64UrlSafe::decode((string) static::CHRONICLE_PUBKEY);
 
         /** @var Client $guzzle */
-        $guzzle = Certainty::getGuzzleClient();
+        $guzzle = Certainty::getGuzzleClient(new Fetch(dirname($bundle->getFilePath())));
 
         // We could catch the ConnectException, but let's not.
         /** @var Response $response */

@@ -154,7 +154,7 @@ class LocalCACertBuilder extends Bundle
         }
         $signature = \ParagonIE_Sodium_Compat::crypto_sign_detached($body, $this->secretKey);
 
-        $http = Certainty::getGuzzleClient();
+        $http = Certainty::getGuzzleClient(new Fetch(dirname($this->getFilePath())));
         /** @var Response $response */
         $response = $http->post(
             $this->chronicleUrl . '/publish',
