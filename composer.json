@@ -21,8 +21,7 @@
     }
   },
   "bin": [
-    "bin/certainty-cert-symlink",
-    "bin/certainty-post-update-script"
+    "bin/certainty-cert-symlink"
   ],
   "require": {
     "php": "^5.5|^7",
