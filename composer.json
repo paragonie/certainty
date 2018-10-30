@@ -31,11 +31,12 @@
     "paragonie/sodium_compat": "^1.6"
   },
   "require-dev": {
+    "composer/composer": "^1",
     "phpunit/phpunit": "^4|^5|^6"
   },
   "scripts": {
     "post-autoload-dump": [
-      "@php bin/certainty-post-update-script data/"
+      "ParagonIE\\Certainty\\Composer::postAutoloadDump"
     ]
   }
 }
