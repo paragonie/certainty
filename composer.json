@@ -34,11 +34,8 @@
     "phpunit/phpunit": "^4|^5|^6"
   },
   "scripts": {
-    "post-package-install": [
-      "bin/certainty-post-update-script"
-    ],
-    "post-package-update": [
-      "bin/certainty-post-update-script"
+    "post-autoload-dump": [
+      "@php bin/certainty-post-update-script data/"
     ]
   }
 }
