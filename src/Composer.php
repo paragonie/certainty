@@ -14,6 +14,8 @@ class Composer
      *
      * @throws Exception\CertaintyException
      * @throws \SodiumException
+     * @return void
+     * @psalm-suppress UnresolvableInclude
      */
     public static function postAutoloadDump(Event $event)
     {
@@ -21,6 +23,7 @@ class Composer
             // GnuTLS error
             return;
         }
+        /** @var string $vendorDir */
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
         require_once $vendorDir . '/autoload.php';
 
