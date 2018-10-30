@@ -9,9 +9,10 @@ if ($argc < 2) {
 try {
     (new \ParagonIE\Certainty\RemoteFetch($argv[1]))
         ->getLatestBundle(true, true);
-    echo 'OK', PHP_EOL;
+    echo 'Remote Fetch of latest CACert Bundle [OK]', PHP_EOL;
     exit(0);
 } catch (\Throwable $ex) {
+    echo 'Remote Fetch of latest CACert Bundle [failure]', PHP_EOL;
     echo $ex->getMessage(), PHP_EOL;
     echo $ex->getTraceAsString(), PHP_EOL;
     exit(1);
