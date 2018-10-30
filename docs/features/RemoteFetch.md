@@ -62,6 +62,30 @@ $data = file_get_contents(
 );
 ```
 
+#### Composer Integration
+
+**Since version 2.2.0.**
+
+You can have Certainty request an up-to-date bundle at runtime by ensuring
+you add this entry to your composer.json file:
+
+```json
+{
+  "scripts": {
+    "post-autoload-dump": [
+      "ParagonIE\\Certainty\\Composer::postAutoloadDump"
+    ]
+  }
+}
+```
+
+Then, you can simply use the local `Fetch` class instead of `RemoteFetch` in
+your application code. Every time you run `composer update`, it will fetch
+the latest bundles from Certainty.
+ 
+This is a great way to reduce your runtime performance overhead while
+guaranteeing that you have the latest CACert bundle.
+
 ### Changing the Path or URL
 
 By default, Certainty's `RemoteFetch` feature pulls from Github and uses the most recent CA-Cert
