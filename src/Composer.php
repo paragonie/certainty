@@ -17,6 +17,10 @@ class Composer
      */
     public static function postAutoloadDump(Event $event)
     {
+        if (\getenv('TRAVIS')) {
+            // GnuTLS error
+            return;
+        }
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
         require_once $vendorDir . '/autoload.php';
 
