@@ -113,9 +113,9 @@ class RemoteFetch extends Fetch
         try {
             $expires = (new \DateTime($cacheTime))->add($this->cacheTimeout);
             return $expires <= new \DateTime('NOW');
-        } catch (\Throwable $ex) {
-            return true;
+        } catch (\Exception $ex) {
         }
+        return true;
     }
 
     /**
