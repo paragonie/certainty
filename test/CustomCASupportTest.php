@@ -62,7 +62,7 @@ class CustomCASupportTest extends TestCase
             $customLatest->getSha256Sum()
         );
 
-        $this->assertTrue($validator::checkEd25519Signature($customLatest));
+        $this->assertTrue($validator->checkEd25519Signature($customLatest));
     }
 
 }
