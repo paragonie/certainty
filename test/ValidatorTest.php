@@ -13,12 +13,16 @@ class ValidatorTest extends TestCase
 {
     /** @var Bundle $bundle */
     protected $bundle;
+    
+    /** @var Validator $validator */
+    protected $validator;
 
     /**
      * Sets up the Validator test.
      */
     public function setUp()
     {
+        $this->validator = new Validator();
         $this->bundle = new Bundle(
             __DIR__ . '/static/test-file.txt',
             '7b8eb84bbaa30c648f3fc9b28d720ab247314032cc4c1f8ad7bd13f7eb2a40a8',
@@ -32,7 +36,7 @@ class ValidatorTest extends TestCase
     public function testSha256sum()
     {
         $this->assertTrue(
-            Validator::checkSha256Sum($this->bundle),
+            $this->validator->checkSha256Sum($this->bundle),
             'Sha256sum of test case is wrong.'
         );
     }
@@ -43,7 +47,7 @@ class ValidatorTest extends TestCase
      */
     public function testEd25519()
     {
-        $this->assertTrue(Validator::checkEd25519Signature($this->bundle));
-        $this->assertFalse(Validator::checkEd25519Signature($this->bundle, true));
+        $this->assertTrue($this->validator->checkEd25519Signature($this->bundle));
+        $this->assertFalse($this->validator->checkEd25519Signature($this->bundle, true));
     }
 }
