@@ -16,14 +16,24 @@ class Fetch
     const CHECK_CHRONICLE_BY_DEFAULT = false;
 
     /**
+     * @var string $dataDirectory
+     */
+    protected $dataDirectory = '';
+
+    /**
      * @var string $trustChannel
      */
     protected $trustChannel = Certainty::TRUST_DEFAULT;
 
     /**
-     * @var string $dataDirectory
+     * @var string $chronicleUrl
      */
-    protected $dataDirectory = '';
+    protected $chronicleUrl = '';
+
+    /**
+     * @var string $chroniclePublicKey
+     */
+    protected $chroniclePublicKey = '';
 
     /**
      * Fetch constructor.
@@ -69,7 +79,7 @@ class Fetch
             if ($bundle->hasCustom()) {
                 $validator = $bundle->getValidator();
             } else {
-                $validator = new Validator();
+                $validator = new Validator($this->chronicleUrl, $this->chroniclePublicKey);
             }
 
             // If the SHA256 doesn't match, fail fast.
@@ -77,10 +87,10 @@ class Fetch
                 /** @var bool $valid */
                 $valid = true;
                 if ($checkEd25519Signature) {
-                    $valid = $valid && $validator::checkEd25519Signature($bundle);
+                    $valid = $valid && $validator->checkEd25519Signature($bundle);
                 }
                 if ($checkChronicle) {
-                    $valid = $valid && $validator::checkChronicleHash($bundle);
+                    $valid = $valid && $validator->checkChronicleHash($bundle);
                 }
                 if ($valid) {
                     return $bundle;
@@ -108,6 +118,18 @@ class Fetch
                 $this->trustChannel
             )
         );
+    }
+
+    /**
+     * @param string $url
+     * @param string $publicKey
+     * @return self
+     */
+    public function setChronicle($url, $publicKey)
+    {
+        $this->chronicleUrl = $url;
+        $this->chroniclePublicKey = $publicKey;
+        return $this;
     }
 
     /**
