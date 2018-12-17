@@ -8,6 +8,17 @@ Before you begin, which problem are you trying to solve?
 
 ## Troubleshooting
 
+### Cannot connect to https://php-chronicle.pie-hosted.com/chronicle
+
+If you're having difficulties connecting to the PHP Chronicle, you can use
+a replica instance of the PHP Chronicle.
+
+#### PHP Chronicle Replicas for Certainty
+
+| URL | Public Key | Operator |
+| --- | ---------- | -------- |
+| https://php-chronicle-replica.pie-hosted.com/chronicle/replica/_vi6Mgw6KXBSuOFUwYA2H2GEPLawUmjqFJbCCuqtHzGZ/ | `MoavD16iqe9-QVhIy-ewD4DMp0QRH-drKfwhfeDAUG0=` | [Paragon Initiative Enterprises](https://paragonie.com) | 
+
 ### I'm Getting a File Permission Error When Trying to Use Certainty
 
 Make sure the `vendor/paragonie/certainty/data` directory is writable. For example:

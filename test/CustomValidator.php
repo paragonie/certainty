@@ -34,7 +34,7 @@ class CustomValidator extends Validator
      *
      * @throws \SodiumException
      */
-    public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
+    public function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {
         return \ParagonIE_Sodium_File::verify(
             $bundle->getSignature(true),

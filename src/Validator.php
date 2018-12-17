@@ -22,13 +22,43 @@ class Validator
     // Set this to true to not throw exceptions
     const THROW_MORE_EXCEPTIONS = false;
 
-    // Ed25519 public keys
+    /**
+     * Ed25519 public keys. These are hard-coded for the class, but can be changed in inherited classes.
+     */
     const PRIMARY_SIGNING_PUBKEY = '98f2dfad4115fea9f096c35485b3bf20b06e94acac3b7acf6185aa5806020342';
     const BACKUP_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
 
-    // Chronicle settings.
+    // Default Chronicle settings, if none are provided.
     const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
     const CHRONICLE_PUBKEY = 'MoavD16iqe9-QVhIy-ewD4DMp0QRH-drKfwhfeDAUG0=';
+
+    /**
+     * @var string $chronicleUrl
+     */
+    protected $chronicleUrl = '';
+
+    /**
+     * @var string $chroniclePublicKey
+     */
+    protected $chroniclePublicKey = '';
+
+    /**
+     * Validator constructor.
+     *
+     * @param string $chronicleUrl
+     * @param string $chroniclePublicKey
+     */
+    public function __construct($chronicleUrl = '', $chroniclePublicKey = '')
+    {
+        if (!$chronicleUrl) {
+            $chronicleUrl = static::CHRONICLE_URL;
+        }
+        if (!$chroniclePublicKey) {
+            $chroniclePublicKey = static::CHRONICLE_PUBKEY;
+        }
+        $this->chronicleUrl = $chronicleUrl;
+        $this->chroniclePublicKey = $chroniclePublicKey;
+    }
 
     /**
      * Validate SHA256 checksums.
@@ -54,7 +84,7 @@ class Validator
      * @return bool
      * @throws \SodiumException
      */
-    public static function checkEd25519Signature(Bundle $bundle, $backupKey = false)
+    public function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {
         /** @var string $publicKey */
         if ($backupKey) {
@@ -91,9 +121,9 @@ class Validator
      * @throws EncodingException
      * @throws RemoteException
      */
-    public static function checkChronicleHash(Bundle $bundle)
+    public function checkChronicleHash(Bundle $bundle)
     {
-        if (empty(static::CHRONICLE_PUBKEY) && empty(static::CHRONICLE_URL)) {
+        if (empty($this->chronicleUrl) && empty($this->chroniclePublicKey)) {
             // Custom validator has opted to fail open here. Who are we to dissent?
             return true;
         }
@@ -103,10 +133,10 @@ class Validator
         }
         // Inherited classes can override this.
         /** @var string $chronicleUrl */
-        $chronicleUrl = (string) static::CHRONICLE_URL;
+        $chronicleUrl = $this->chronicleUrl;
 
         /** @var string $publicKey */
-        $publicKey = Base64UrlSafe::decode((string) static::CHRONICLE_PUBKEY);
+        $publicKey = Base64UrlSafe::decode($this->chroniclePublicKey);
 
         /** @var Client $guzzle */
         $guzzle = Certainty::getGuzzleClient(new Fetch(dirname($bundle->getFilePath())));

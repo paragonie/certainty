@@ -42,6 +42,8 @@ class RemoteFetch extends Fetch
      * @param string $url
      * @param Client|null $http
      * @param \DateInterval|string|null $timeout
+     * @param string $chronicleUrl
+     * @param string $chroniclePublicKey
      *
      * @throws CertaintyException
      * @throws \SodiumException
@@ -52,7 +54,9 @@ class RemoteFetch extends Fetch
         $dataDir = '',
         $url = self::DEFAULT_URL,
         Client $http = null,
-        $timeout = null
+        $timeout = null,
+        $chronicleUrl = '',
+        $chroniclePublicKey = ''
     ) {
         parent::__construct($dataDir);
         $this->url = $url;
@@ -87,6 +91,9 @@ class RemoteFetch extends Fetch
         }
         /** @var \DateInterval $timeoutObj */
         $this->cacheTimeout = $timeoutObj;
+        if (isset($chronicleUrl, $chroniclePublicKey)) {
+            $this->setChronicle($chronicleUrl, $chroniclePublicKey);
+        }
     }
 
     /**
@@ -103,8 +110,12 @@ class RemoteFetch extends Fetch
         if (!\is_string($cacheTime)) {
             return true;
         }
-        $expires = (new \DateTime($cacheTime))->add($this->cacheTimeout);
-        return $expires <= new \DateTime('NOW');
+        try {
+            $expires = (new \DateTime($cacheTime))->add($this->cacheTimeout);
+            return $expires <= new \DateTime('NOW');
+        } catch (\Exception $ex) {
+        }
+        return true;
     }
 
     /**
