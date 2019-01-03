@@ -89,3 +89,8 @@ The key differences are:
   run `composer update`.
 * We sign our CA-Cert bundles using Ed25519, and check every update into the
   [PHP community Chronicle](https://php-chronicle.pie-hosted.com).
+
+## Support Contracts
+
+If your company uses this library in their products or services, you may be
+interested in [purchasing a support contract from Paragon Initiative Enterprises](https://paragonie.com/enterprise).
