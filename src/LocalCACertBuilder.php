@@ -92,7 +92,6 @@ class LocalCACertBuilder extends Bundle
      */
     public function loadOriginal()
     {
-        /** @var string original */
         $this->original = \file_get_contents($this->filePath);
         if (!\is_string($this->original)) {
             throw new FilesystemException('Could not read contents of CACert file provided.');

@@ -51,10 +51,10 @@ class Validator
     public function __construct($chronicleUrl = '', $chroniclePublicKey = '')
     {
         if (!$chronicleUrl) {
-            $chronicleUrl = static::CHRONICLE_URL;
+            $chronicleUrl = (string) static::CHRONICLE_URL;
         }
         if (!$chroniclePublicKey) {
-            $chroniclePublicKey = static::CHRONICLE_PUBKEY;
+            $chroniclePublicKey = (string) static::CHRONICLE_PUBKEY;
         }
         $this->chronicleUrl = $chronicleUrl;
         $this->chroniclePublicKey = $chroniclePublicKey;
