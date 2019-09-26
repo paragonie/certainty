@@ -147,3 +147,19 @@ $latest->createSymlink('/path/to/cacert.pem', true);
 ```
 
 The second argument, `true`, tells Certainty to remove the existing symlink if it already exists.
+
+## Using a Different Chronicle
+
+To use a different Chronicle instance (i.e. a replica of the PHP Chronicle
+instead of the main instance), you can configure your `RemoteFetch` object
+by calling the `setChronicle()` method with a URL and a public key.
+
+```php
+<?php
+use ParagonIE\Certainty\RemoteFetch;
+$remoteFetch = new RemoteFetch('/var/www/my-project/data/certs');
+$remoteFetch->setChronicle(
+    'https://php-chronicle-replica.pie-hosted.com/chronicle/replica/_vi6Mgw6KXBSuOFUwYA2H2GEPLawUmjqFJbCCuqtHzGZ',
+    'MoavD16iqe9-QVhIy-ewD4DMp0QRH-drKfwhfeDAUG0='
+);
+```
