@@ -58,5 +58,13 @@ class RemoteFetchTest extends TestCase
         );
         $fetch->setCacheTimeout(new \DateInterval('PT01M'));
         $this->assertTrue($fetch->cacheExpired());
+
+
+        $latest = $fetch->getLatestBundle();
+        file_put_contents($latest->getFilePath(), ' corrupt', FILE_APPEND);
+        (new RemoteFetch($this->dir))->getLatestBundle();
+
+        $cacerts = json_decode(file_get_contents($this->dir . '/ca-certs.json'), true);
+        $this->assertTrue(!empty($cacerts[0]['bad-bundle']));
     }
 }
