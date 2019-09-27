@@ -36,6 +36,12 @@ class Fetch
     protected $chroniclePublicKey = '';
 
     /**
+     * List of bundles that have just been downloaded (e.g. RemoteFetch)
+     * @var array<int, string> $unverified
+     */
+    protected $unverified = [];
+
+    /**
      * Fetch constructor.
      *
      * You almost certainly want to use RemoteFetch instead.
@@ -70,10 +76,13 @@ class Fetch
         if (\is_null($checkEd25519Signature)) {
             $checkEd25519Signature = (bool) (static::CHECK_SIGNATURE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
-        if (\is_null($checkChronicle)) {
+        $conditionalChronicle = \is_null($checkChronicle);
+        if ($conditionalChronicle) {
             $checkChronicle = (bool) (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
 
+        /** @var int $bundleIndex */
+        $bundleIndex = 0;
         /** @var Bundle $bundle */
         foreach ($this->listBundles('', $this->trustChannel) as $bundle) {
             if ($bundle->hasCustom()) {
@@ -88,14 +97,33 @@ class Fetch
                 $valid = true;
                 if ($checkEd25519Signature) {
                     $valid = $valid && $validator->checkEd25519Signature($bundle);
+                    if (!$valid) {
+                        $this->markBundleAsBad($bundleIndex, 'Ed25519 signature mismatch');
+                    }
                 }
-                if ($checkChronicle) {
+                if ($conditionalChronicle && $checkChronicle) {
+                    // Conditional Chronicle check (only on first brush):
+                    $index = array_search($bundle->getFilePath(), $this->unverified, true);
+                    if ($index !== false) {
+                        $validChronicle = $validator->checkChronicleHash($bundle);
+                        $valid = $valid && $validChronicle;
+                        if ($validChronicle) {
+                            unset($this->unverified[$index]);
+                        } else {
+                            $this->markBundleAsBad($bundleIndex, 'Chronicle');
+                        }
+                    }
+                } elseif ($checkChronicle) {
+                    // Always check Chronicle:
                     $valid = $valid && $validator->checkChronicleHash($bundle);
                 }
                 if ($valid) {
                     return $bundle;
                 }
+            } else {
+                $this->markBundleAsBad($bundleIndex, 'SHA256 mismatch');
             }
+            ++$bundleIndex;
         }
         throw new BundleException('No valid bundles were found in the data directory.');
     }
@@ -133,18 +161,29 @@ class Fetch
     }
 
     /**
-     * List bundles
-     *
-     * @param string $customValidator Fully-qualified class name for Validator
-     * @param string $trustChannel
-     * @return array<int, Bundle>
-     *
-     * @throws CertaintyException
+     * @param int $index
+     * @param string $reason
+     * @throws EncodingException
+     * @throws FilesystemException
      */
-    protected function listBundles(
-        $customValidator = '',
-        $trustChannel = Certainty::TRUST_DEFAULT
-    ) {
+    protected function markBundleAsBad($index = 0, $reason = '')
+    {
+        $data = $this->loadCaCertsFile();
+        $now = (new \DateTime())->format(\DateTime::ATOM);
+        $data[$index]['bad-bundle'] = 'Marked bad on ' . $now . ' for reason: ' . $reason;
+        \file_put_contents(
+            $this->dataDirectory . '/ca-certs.json',
+            json_encode($data, JSON_PRETTY_PRINT)
+        );
+    }
+
+    /**
+     * @return array
+     * @throws EncodingException
+     * @throws FilesystemException
+     */
+    protected function loadCaCertsFile()
+    {
         if (!\file_exists($this->dataDirectory . '/ca-certs.json')) {
             throw new FilesystemException('ca-certs.json not found in data directory.');
         }
@@ -160,11 +199,36 @@ class Fetch
         if (!\is_array($data)) {
             throw new EncodingException('ca-certs.json is not a valid JSON file.');
         }
+        return (array) $data;
+    }
+
+    /**
+     * List bundles
+     *
+     * @param string $customValidator Fully-qualified class name for Validator
+     * @param string $trustChannel
+     * @return array<int, Bundle>
+     *
+     * @throws CertaintyException
+     */
+    protected function listBundles(
+        $customValidator = '',
+        $trustChannel = Certainty::TRUST_DEFAULT
+    ) {
+        $data = $this->loadCaCertsFile();
         $bundles = [];
         /** @var array<string, string> $row */
         foreach ($data as $row) {
             if (!isset($row['date'], $row['file'], $row['sha256'], $row['signature'], $row['trust-channel'])) {
                 // The necessary keys are not defined.
+                continue;
+            }
+            if (!file_exists($this->dataDirectory . '/' . $row['file'])) {
+                // Skip nonexistent files
+                continue;
+            }
+            if (!empty($row['bad-bundle'])) {
+                // Bundle marked as "bad"
                 continue;
             }
             if ($row['trust-channel'] !== $trustChannel) {

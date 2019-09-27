@@ -185,6 +185,7 @@ class RemoteFetch extends Fetch
                 /** @var string $body */
                 $body = (string) $request->getBody();
                 \file_put_contents($this->dataDirectory . '/' . $filename, $body);
+                $this->unverified []= $this->dataDirectory . '/' . $item['file'];
             }
         }
 

@@ -25,6 +25,8 @@
   ],
   "require": {
     "php": "^5.5|^7",
+    "ext-curl": "*",
+    "ext-json": "*",
     "guzzlehttp/guzzle": "^6",
     "paragonie/constant_time_encoding": "^1|^2",
     "paragonie/sodium_compat": "^1.11"
