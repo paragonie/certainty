@@ -163,11 +163,13 @@ class Fetch
     /**
      * @param int $index
      * @param string $reason
+     * @return void
      * @throws EncodingException
      * @throws FilesystemException
      */
     protected function markBundleAsBad($index = 0, $reason = '')
     {
+        /** @var array<int, array<string, string>> $data */
         $data = $this->loadCaCertsFile();
         $now = (new \DateTime())->format(\DateTime::ATOM);
         $data[$index]['bad-bundle'] = 'Marked bad on ' . $now . ' for reason: ' . $reason;
