@@ -44,6 +44,7 @@ class RemoteFetch extends Fetch
      * @param \DateInterval|string|null $timeout
      * @param string $chronicleUrl
      * @param string $chroniclePublicKey
+     * @param int $connectTimeout
      *
      * @throws CertaintyException
      * @throws \SodiumException
@@ -56,16 +57,17 @@ class RemoteFetch extends Fetch
         Client $http = null,
         $timeout = null,
         $chronicleUrl = '',
-        $chroniclePublicKey = ''
+        $chroniclePublicKey = '',
+        $connectTimeout = 5
     ) {
         parent::__construct($dataDir);
         $this->url = $url;
 
         if (\is_null($http)) {
             if (\file_exists($this->dataDirectory . '/ca-certs.json')) {
-                $http = Certainty::getGuzzleClient(new Fetch($this->dataDirectory));
+                $http = Certainty::getGuzzleClient(new Fetch($this->dataDirectory), $connectTimeout);
             } else {
-                $http = Certainty::getGuzzleClient(new Fetch(__DIR__."/../data/"));
+                $http = Certainty::getGuzzleClient(new Fetch(__DIR__."/../data/"), $connectTimeout);
             }
         }
         /** @var Client $http */

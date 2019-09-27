@@ -17,11 +17,12 @@ class Certainty
 
     /**
      * @param Fetch|null $fetch
+     * @param int $timeout
      *
      * @return Client
      * @throws \SodiumException
      */
-    public static function getGuzzleClient(Fetch $fetch = null)
+    public static function getGuzzleClient(Fetch $fetch = null, $timeout = 5)
     {
         $options = ['verify' => true];
         if (!\is_null($fetch)) {
@@ -36,7 +37,7 @@ class Certainty
             // https://github.com/curl/curl/blob/6aa86c493bd77b70d1f5018e102bc3094290d588/include/curl/curl.h#L1927
             $options['curl.options'][CURLOPT_SSLVERSION] = CURL_SSLVERSION_TLSv1_2 | (CURL_SSLVERSION_TLSv1 << 16);
         }
-        $options['connect_timeout'] = 5;
+        $options['connect_timeout'] = (int) $timeout;
 
         return new Client($options);
     }
