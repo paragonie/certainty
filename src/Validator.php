@@ -30,7 +30,7 @@ class Validator
 
     // Default Chronicle settings, if none are provided.
     const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
-    const CHRONICLE_PUBKEY = 'MoavD16iqe9-QVhIy-ewD4DMp0QRH-drKfwhfeDAUG0=';
+    const CHRONICLE_PUBKEY = 'Bgcc1QfkP0UNgMZuHzi0hC1hA1SoVAyUrskmSkzRw3E=';
 
     /**
      * @var string $chronicleUrl
