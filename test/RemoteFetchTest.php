@@ -27,8 +27,12 @@ class RemoteFetchTest extends TestCase
 
     public function tearDown()
     {
-        \unlink($this->dir . '/ca-certs.json');
-        \unlink($this->dir . '/ca-certs.cache');
+        if (file_exists($this->dir . '/ca-certs.json')) {
+            \unlink($this->dir . '/ca-certs.json');
+        }
+        if (file_exists($this->dir . '/ca-certs.cache')) {
+            \unlink($this->dir . '/ca-certs.cache');
+        }
         foreach(\glob($this->dir . '/*.pem') as $f) {
             $real = \realpath($f);
             if (\strpos($real, $this->dir) === 0) {
@@ -66,5 +70,31 @@ class RemoteFetchTest extends TestCase
 
         $cacerts = json_decode(file_get_contents($this->dir . '/ca-certs.json'), true);
         $this->assertTrue(!empty($cacerts[0]['bad-bundle']));
+    }
+
+    public function testLatest()
+    {
+        $files = array();
+        $dir = dirname(__DIR__) . '/data';
+        foreach (glob($dir . '/cacert-*.pem') as $file) {
+            $pieces = explode('/', $file);
+            $filename = array_pop($pieces);
+            if (preg_match('/^cacert\-(\d+)\-(\d+)\-(\d+).pem$/', $filename, $m)) {
+                $i = (int) ($m[1] . $m[2] . $m[3]);
+                $files[$i] = $file;
+            }
+        }
+        krsort($files);
+        $path = array_shift($files);
+
+        $fetch = new RemoteFetch($dir);
+        $this->assertSame(
+            $path,
+            $fetch->getLatestBundle()->getFilePath()
+        );
+        $this->assertSame(
+            hash_file('sha256', $path),
+            $fetch->getLatestBundle()->getSha256Sum()
+        );
     }
 }

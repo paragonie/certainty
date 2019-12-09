@@ -1,10 +1,10 @@
 [
   {
-    "chronicle": "bLueJzl-EEF5gwMQ_nGRgG2fvkexOnO_G_xgXUXj_zI=",
+    "chronicle": "it79kHqPiO9miqIkDLuWEN8O4fCSiP3gMdCp9pVKV2I=",
     "date": "2019-11-27",
     "file": "cacert-2019-11-27.pem",
     "sha256": "0d98a1a961aab523c9dc547e315e1d79e887dea575426ff03567e455fc0b66b4",
-    "signature": "d51235c4ffbaf845213a0789994dd759a5d9792f63edced595a44d0d8b0b91a8a6e5d34409b9c57739ce91327f390fbe328c76bfd57d15273974bcadc405ac03",
+    "signature": "74b8a1435f10bed11c57ef2a8e8ff79011fc5eda9b5686a2b2d0b18ae191f4b3a99de96993fb441679ab479120685e420a86aac5d83f445422fc57765cc20c00",
     "trust-channel": "Mozilla"
   },
   {
