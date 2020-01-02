@@ -1,5 +1,13 @@
 [
   {
+    "chronicle": "wCG8YrvbmDm9gefwmjB4eAjlRJiHxKVAcsiuoGLIqik=",
+    "date": "2020-01-01",
+    "file": "cacert-2020-01-01.pem",
+    "sha256": "adf770dfd574a0d6026bfaa270cb6879b063957177a991d453ff1d302c02081f",
+    "signature": "e0f50aa86e2977f37ec4c5dba72dd1aaea87389c439d701709d0fbe3351d59225da33b601e1c0789c8b6c1418f3c337daca24f63f17565e46bf3b2873928d20e",
+    "trust-channel": "Mozilla"
+  },
+  {
     "chronicle": "it79kHqPiO9miqIkDLuWEN8O4fCSiP3gMdCp9pVKV2I=",
     "date": "2019-11-27",
     "file": "cacert-2019-11-27.pem",
