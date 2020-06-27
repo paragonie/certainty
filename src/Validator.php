@@ -190,7 +190,7 @@ class Validator
             $ok = false;
         }
         if (!$ok) {
-            if (self::THROW_MORE_EXCEPTIONS) {
+            if (static::THROW_MORE_EXCEPTIONS) {
                 if (isset($json['error'])) {
                     /** @var string $jsonError */
                     $jsonError = $json['error'];

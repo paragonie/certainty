@@ -68,6 +68,7 @@ class Bundle
         $this->signature = $signature;
         $this->chronicleHash = $chronicleHash;
         if (!empty($customValidator)) {
+            /** @psalm-suppress MixedMethodCall */
             if (\class_exists($customValidator)) {
                 $newClass = new $customValidator();
                 if (!($newClass instanceof Validator)) {
@@ -177,6 +178,8 @@ class Bundle
      *
      * @return Validator
      * @throws CertaintyException
+     *
+     * @psalm-suppress DocblockTypeContradiction
      */
     public function getValidator()
     {
