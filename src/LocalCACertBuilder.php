@@ -8,6 +8,7 @@ use ParagonIE\Certainty\Exception\EncodingException;
 use ParagonIE\Certainty\Exception\FilesystemException;
 use ParagonIE\Certainty\Exception\InvalidResponseException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
+use ParagonIE\ConstantTime\Binary;
 use ParagonIE\ConstantTime\Hex;
 
 /**
@@ -226,6 +227,8 @@ class LocalCACertBuilder extends Bundle
      * @return bool
      * @throws CertaintyException
      * @throws \SodiumException
+     *
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function save()
     {
@@ -311,9 +314,9 @@ class LocalCACertBuilder extends Bundle
         $clientId = '',
         $repository = 'paragonie/certainty'
     ) {
-        if (\ParagonIE_Sodium_Core_Util::strlen($publicKey) === 64) {
+        if (Binary::safeStrlen($publicKey) === 64) {
             $publicKey = Hex::decode($publicKey);
-        } elseif (\ParagonIE_Sodium_Core_Util::strlen($publicKey) !== 32) {
+        } elseif (Binary::safeStrlen($publicKey) !== 32) {
             throw new CryptoException(
                 'Signing secret keys must be SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES bytes long.'
             );
@@ -332,6 +335,8 @@ class LocalCACertBuilder extends Bundle
      * @param string $string
      * @return self
      * @throws \TypeError
+     *
+     * @psalm-suppress MixedMethodCall
      */
     public function setCustomValidator($string = '')
     {
@@ -381,9 +386,9 @@ class LocalCACertBuilder extends Bundle
     public function setSigningKey($secretKey = '')
     {
         // Handle hex-encoded strings.
-        if (\ParagonIE_Sodium_Core_Util::strlen($secretKey) === 128) {
+        if (Binary::safeStrlen($secretKey) === 128) {
             $secretKey = Hex::decode($secretKey);
-        } elseif (\ParagonIE_Sodium_Core_Util::strlen($secretKey) !== 64) {
+        } elseif (Binary::safeStrlen($secretKey) !== 64) {
             throw new CryptoException(
                 'Signing secret keys must be SODIUM_CRYPTO_SIGN_SECRETKEYBYTES bytes long.'
             );
