@@ -33,7 +33,7 @@
   },
   "require-dev": {
     "composer/composer": "^1",
-    "phpunit/phpunit": "^4|^5|^6"
+    "phpunit/phpunit": "^4|^5|^6|^7"
   },
   "scripts": {
     "post-autoload-dump": [
