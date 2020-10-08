@@ -27,7 +27,7 @@
     "php": "^5.5|^7|^8",
     "ext-curl": "*",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "^6",
+    "guzzlehttp/guzzle": "^6.0|^7.0",
     "paragonie/constant_time_encoding": "^1|^2",
     "paragonie/sodium_compat": "^1.11"
   },
