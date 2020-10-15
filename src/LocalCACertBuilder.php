@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\CryptoException;
@@ -72,9 +73,11 @@ class LocalCACertBuilder extends Bundle
      * @return self
      *
      * @throws CertaintyException
+     * @psalm-suppress UnsafeInstantiation
      */
     public static function fromBundle(Bundle $old)
     {
+        /** @var self $new */
         $new = new static(
             $old->getFilePath(),
             $old->getSha256Sum(),
@@ -132,6 +135,9 @@ class LocalCACertBuilder extends Bundle
      * @return string
      *
      * @throws CertaintyException
+     * @throws EncodingException
+     * @throws InvalidResponseException
+     * @throws GuzzleException
      * @throws \SodiumException
      */
     protected function commitToChronicle($sha256sum, $signature)
