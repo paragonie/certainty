@@ -27,6 +27,7 @@ matrix:
     - php: "hhvm"
       env: USE_PSALM=1
   allow_failures:
+    - php: "5.5"
     - php: "nightly"
     - php: "master"
     - php: "hhvm"
