@@ -7,4 +7,8 @@
     <projectFiles>
         <directory name="src" />
     </projectFiles>
+    <issueHandlers>
+        <RedundantCast errorLevel="suppress" />
+        <!-- PHP 5 support requires being explicit, even if it means being redundant -->
+    </issueHandlers>
 </psalm>
