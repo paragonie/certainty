@@ -1,6 +1,6 @@
 # Certainty - CA-Cert Automation for PHP Projects
 
-[![Build Status](https://travis-ci.org/paragonie/certainty.svg?branch=master)](https://travis-ci.org/paragonie/certainty)
+[![Build Status](https://github.com/paragonie/certainty/actions/workflows/ci.yml/badge.svg)](https://github.com/paragonie/certainty/actions)
 [![Latest Stable Version](https://poser.pugx.org/paragonie/certainty/v/stable)](https://packagist.org/packages/paragonie/certainty)
 [![Latest Unstable Version](https://poser.pugx.org/paragonie/certainty/v/unstable)](https://packagist.org/packages/paragonie/certainty)
 [![License](https://poser.pugx.org/paragonie/certainty/license)](https://packagist.org/packages/paragonie/certainty)

@@ -20,12 +20,21 @@ class CustomCASupportTest extends TestCase
      */
     protected $defaultDir;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function before()
     {
         $this->defaultDir = dirname(__DIR__) . '/data';
+        if (!\is_dir($this->defaultDir)) {
+            \mkdir($this->defaultDir);
+        }
     }
 
-    public function tearDown()
+    /**
+     * @afterClass
+     */
+    public function after()
     {
         \unlink(__DIR__ . '/static/combined.pem');
         \unlink(__DIR__ . '/static/ca-certs.json');

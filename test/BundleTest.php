@@ -21,13 +21,22 @@ class BundleTest extends TestCase
     /** @var string $link */
     protected $link;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function before()
     {
         $this->defaultDir = dirname(__DIR__) . '/data';
+        if (!\is_dir($this->defaultDir)) {
+            \mkdir($this->defaultDir);
+        }
         $this->link = __DIR__ . '/static/symlink-test';
     }
 
-    public function tearDown()
+    /**
+     * @after
+     */
+    public function after()
     {
         if (\file_exists($this->link)) {
             \unlink($this->link);
