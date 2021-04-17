@@ -14,7 +14,10 @@ class RemoteFetchTest extends TestCase
     /** @var string */
     protected $dir;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function before()
     {
         if (\getenv('TRAVIS')) {
             $this->markTestSkipped('Unknown GnuTLS errors are breaking TravisCI but the tests succeed locally.');
@@ -25,7 +28,10 @@ class RemoteFetchTest extends TestCase
         }
     }
 
-    public function tearDown()
+    /**
+     * @afterClass
+     */
+    public function after()
     {
         if (file_exists($this->dir . '/ca-certs.json')) {
             \unlink($this->dir . '/ca-certs.json');

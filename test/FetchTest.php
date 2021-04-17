@@ -20,9 +20,15 @@ class FetchTest extends TestCase
     /** @var string */
     protected $root;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function before()
     {
         $this->defaultDir = dirname(__DIR__) . '/data';
+        if (!\is_dir($this->defaultDir)) {
+            \mkdir($this->defaultDir);
+        }
         $this->root = __DIR__ . '/static/';
     }
 

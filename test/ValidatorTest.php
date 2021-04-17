@@ -27,8 +27,10 @@ class ValidatorTest extends TestCase
 
     /**
      * Sets up the Validator test.
+     *
+     * @before
      */
-    public function setUp()
+    public function before()
     {
         $this->validator = new Validator();
         $this->bundle = new Bundle(
@@ -47,9 +49,9 @@ class ValidatorTest extends TestCase
     }
 
     /**
-     *
+     * @afterClass
      */
-    public function tearDown()
+    public function after()
     {
         foreach ([$this->dir, $this->dir2] as $d) {
             if (\file_exists($d . '/ca-certs.json')) {
