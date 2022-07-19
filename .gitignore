@@ -2,4 +2,11 @@
 /local/dev-testing
 /local/keys.json
 /composer.lock
+/test/static/*/*.cache
+/test/static/*/*.json
+/test/static/*/*.pem
+!/test/static/data-invalid/ca-certs.json
+!/test/static/data-invalid/cacert-2017-09-20.pem
+/test/static/ca-certs.json
+/test/static/combined.pem
 /vendor

@@ -29,7 +29,7 @@
     "ext-json": "*",
     "guzzlehttp/guzzle": "^6|^7",
     "paragonie/constant_time_encoding": "^1|^2",
-    "paragonie/sodium_compat": "^1.13"
+    "paragonie/sodium_compat": "^1.17"
   },
   "require-dev": {
     "composer/composer": "^1|>=2.0.14",
