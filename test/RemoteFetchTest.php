@@ -14,14 +14,14 @@ class RemoteFetchTest extends TestCase
     /** @var string */
     protected $dir;
 
+    protected $ranOnce = false;
+
     /**
      * @before
      */
     public function before()
     {
-        if (\getenv('TRAVIS')) {
-            $this->markTestSkipped('Unknown GnuTLS errors are breaking TravisCI but the tests succeed locally.');
-        }
+        $this->ranOnce = true;
         $this->dir = __DIR__ . '/static/data-remote';
         if (!\is_dir($this->dir)) {
             \mkdir($this->dir);
@@ -29,7 +29,7 @@ class RemoteFetchTest extends TestCase
     }
 
     /**
-     * @afterClass
+     * @after
      */
     public function after()
     {
@@ -54,6 +54,9 @@ class RemoteFetchTest extends TestCase
      */
     public function testRemoteFetch()
     {
+        if (!$this->ranOnce) {
+            $this->before();
+        }
         $this->assertFalse(\file_exists($this->dir . '/ca-certs.json'));
         $fetch = new RemoteFetch($this->dir);
         $fetch->getLatestBundle();
@@ -80,6 +83,9 @@ class RemoteFetchTest extends TestCase
 
     public function testLatest()
     {
+        if (!$this->ranOnce) {
+            $this->before();
+        }
         $files = array();
         $dir = dirname(__DIR__) . '/data';
         foreach (glob($dir . '/cacert-*.pem') as $file) {
