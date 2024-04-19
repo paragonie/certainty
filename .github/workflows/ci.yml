@@ -90,5 +90,3 @@ jobs:
       - name: PHPUnit tests
         run: vendor/bin/phpunit
 
-      - name: Install Psalm
-        run: composer require --dev vimeo/psalm:^4
