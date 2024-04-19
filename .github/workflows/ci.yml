@@ -91,7 +91,7 @@ jobs:
         run: vendor/bin/phpunit
 
       - name: Install Psalm
-        run: composer require --dev vimeo/psalm:^4
+        run: composer require --dev vimeo/psalm:^4|^5
 
       - name: Static Analysis
         run: vendor/bin/psalm
