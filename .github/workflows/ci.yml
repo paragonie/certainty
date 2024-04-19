@@ -31,8 +31,6 @@ jobs:
 
       - name: PHPUnit tests
         run: vendor/bin/phpunit
-        with:
-          memory_limit: 256M
 
   moderate:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
@@ -62,9 +60,6 @@ jobs:
 
       - name: PHPUnit tests
         run: vendor/bin/phpunit
-        timeout-minutes: 30
-        with:
-          memory_limit: 256M
 
   modern:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
@@ -94,9 +89,6 @@ jobs:
 
       - name: PHPUnit tests
         run: vendor/bin/phpunit
-        timeout-minutes: 30
-        with:
-          memory_limit: 256M
 
       - name: Install Psalm
         run: composer require --dev vimeo/psalm:^4
