@@ -56,7 +56,7 @@ jobs:
         run: sudo chmod -R 0777 .
 
       - name: Install dependencies
-        run: composer install
+        run: composer update
 
       - name: PHPUnit tests
         run: vendor/bin/phpunit
@@ -85,7 +85,7 @@ jobs:
         run: sudo chmod -R 0777 .
 
       - name: Install dependencies
-        run: composer install
+        run: composer update
 
       - name: PHPUnit tests
         run: vendor/bin/phpunit
