@@ -99,7 +99,6 @@ class Fetch
                 if ($checkEd25519Signature) {
                     $valid = $validator->checkEd25519Signature($bundle);
                     if (!$valid) {
-                        var_dump('invalid signature for' . $bundle->getFilePath());
                         $this->markBundleAsBad($bundleIndex, 'Ed25519 signature mismatch');
                     }
                 }
@@ -108,11 +107,9 @@ class Fetch
                     $index = array_search($bundle->getFilePath(), $this->unverified, true);
                     if ($index !== false) {
                         $validChronicle = $validator->checkChronicleHash($bundle);
-                        $valid = $valid && $validChronicle;
                         if ($validChronicle) {
                             unset($this->unverified[$index]);
                         } else {
-                            var_dump('invalid chronicle entry for' . $bundle->getFilePath());
                             $this->markBundleAsBad($bundleIndex, 'Chronicle');
                         }
                     }
