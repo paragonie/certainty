@@ -28,7 +28,7 @@
     "ext-curl": "*",
     "ext-json": "*",
     "guzzlehttp/guzzle": "^6|^7",
-    "paragonie/constant_time_encoding": "^1|^2",
+    "paragonie/constant_time_encoding": "^1|^2|^3",
     "paragonie/sodium_compat": "^1|^2"
   },
   "require-dev": {
