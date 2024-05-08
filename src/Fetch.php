@@ -95,11 +95,11 @@ class Fetch
 
             // If the SHA256 doesn't match, fail fast.
             if ($validator::checkSha256Sum($bundle)) {
-                /** @var bool $valid */
                 $valid = true;
                 if ($checkEd25519Signature) {
-                    $valid = $valid && $validator->checkEd25519Signature($bundle);
+                    $valid = $validator->checkEd25519Signature($bundle);
                     if (!$valid) {
+                        var_dump('invalid signature for' . $bundle->getFilePath());
                         $this->markBundleAsBad($bundleIndex, 'Ed25519 signature mismatch');
                     }
                 }
@@ -112,6 +112,7 @@ class Fetch
                         if ($validChronicle) {
                             unset($this->unverified[$index]);
                         } else {
+                            var_dump('invalid chronicle entry for' . $bundle->getFilePath());
                             $this->markBundleAsBad($bundleIndex, 'Chronicle');
                         }
                     }
