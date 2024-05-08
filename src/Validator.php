@@ -25,8 +25,8 @@ class Validator
     /**
      * Ed25519 public keys. These are hard-coded for the class, but can be changed in inherited classes.
      */
-    const PRIMARY_SIGNING_PUBKEY = '98f2dfad4115fea9f096c35485b3bf20b06e94acac3b7acf6185aa5806020342';
-    const BACKUP_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
+    const PRIMARY_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
+    const BACKUP_SIGNING_PUBKEY = 'b1b4ecee6ad36984c319579dc796edcd2e11ed30a1fa0fe8c88e99820cec1550';
 
     // Default Chronicle settings, if none are provided.
     const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
