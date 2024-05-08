@@ -36,9 +36,9 @@ class CustomValidator extends Validator
      */
     public function checkEd25519Signature(Bundle $bundle, $backupKey = false)
     {
-        return \ParagonIE_Sodium_File::verify(
+        return \sodium_crypto_sign_verify_detached(
             $bundle->getSignature(true),
-            $bundle->getFilePath(),
+            $bundle->getFileContents(),
             Hex::decode(self::$publicKey)
         );
     }

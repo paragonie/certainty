@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
+use ParagonIE\Certainty\Composer;
 use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\RemoteFetch;
 use PHPUnit\Framework\TestCase;
@@ -59,6 +60,7 @@ class RemoteFetchTest extends TestCase
         }
         $this->assertFalse(\file_exists($this->dir . '/ca-certs.json'));
         $fetch = new RemoteFetch($this->dir);
+        Composer::dos2unixAll($this->dir);
         $fetch->getLatestBundle();
         $this->assertTrue(\file_exists($this->dir . '/ca-certs.json'));
 

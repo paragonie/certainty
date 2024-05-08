@@ -81,10 +81,12 @@ class Fetch
             $checkChronicle = (bool) (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
 
-        /** @var int $bundleIndex */
         $bundleIndex = 0;
-        /** @var Bundle $bundle */
-        foreach ($this->listBundles('', $this->trustChannel) as $bundle) {
+        $bundlesAvailable = $this->listBundles('', $this->trustChannel);
+        if (empty($bundlesAvailable)) {
+            throw new BundleException('No bundles were found in the data directory.');
+        }
+        foreach ($bundlesAvailable as $bundle) {
             if ($bundle->hasCustom()) {
                 $validator = $bundle->getValidator();
             } else {
@@ -93,10 +95,9 @@ class Fetch
 
             // If the SHA256 doesn't match, fail fast.
             if ($validator::checkSha256Sum($bundle)) {
-                /** @var bool $valid */
                 $valid = true;
                 if ($checkEd25519Signature) {
-                    $valid = $valid && $validator->checkEd25519Signature($bundle);
+                    $valid = $validator->checkEd25519Signature($bundle);
                     if (!$valid) {
                         $this->markBundleAsBad($bundleIndex, 'Ed25519 signature mismatch');
                     }
@@ -106,7 +107,6 @@ class Fetch
                     $index = array_search($bundle->getFilePath(), $this->unverified, true);
                     if ($index !== false) {
                         $validChronicle = $validator->checkChronicleHash($bundle);
-                        $valid = $valid && $validChronicle;
                         if ($validChronicle) {
                             unset($this->unverified[$index]);
                         } else {
