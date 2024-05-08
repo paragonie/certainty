@@ -1,6 +1,7 @@
 <?php
 namespace ParagonIE\Certainty\Tests;
 
+use ParagonIE\Certainty\Composer;
 use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\CryptoException;
 use ParagonIE\ConstantTime\Hex;
@@ -49,7 +50,6 @@ class CustomCASupportTest extends TestCase
      */
     public function testCustom()
     {
-        $this->markTestSkipped('not important for now');
         $keypair = \ParagonIE_Sodium_Compat::crypto_sign_keypair();
         $secretKey = \ParagonIE_Sodium_Compat::crypto_sign_secretkey($keypair);
         $publicKey = \ParagonIE_Sodium_Compat::crypto_sign_publickey($keypair);
@@ -71,6 +71,7 @@ class CustomCASupportTest extends TestCase
             \hash_file('sha256', __DIR__ . '/static/combined.pem'),
             $customLatest->getSha256Sum()
         );
+        $this->assertTrue(file_exists($customLatest->getFilePath()), 'File does not exist');
 
         $this->assertTrue($validator->checkEd25519Signature($customLatest));
     }

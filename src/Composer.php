@@ -41,7 +41,7 @@ class Composer
      * @param string $dataDir
      * @return void
      */
-    protected static function dos2unixAll($dataDir)
+    public static function dos2unixAll($dataDir)
     {
         foreach (glob($dataDir . '/*.pem') as $pemFile) {
             $contents = file_get_contents($pemFile);
