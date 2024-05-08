@@ -30,6 +30,7 @@ class Composer
         $dataDir = \dirname($vendorDir) . '/data';
         (new RemoteFetch($dataDir))->getLatestBundle(false, false);
         self::dos2unixAll($dataDir);
+        (new RemoteFetch($dataDir))->getLatestBundle();
 
         echo '[OK] Remote Fetch of latest CACert Bundle', PHP_EOL;
     }
@@ -44,7 +45,7 @@ class Composer
     {
         foreach (glob($dataDir . '/*.pem') as $pemFile) {
             $contents = file_get_contents($pemFile);
-            $fixed = str_replace("\r\n", "\n", $pemFile);
+            $fixed = str_replace("\r\n", "\n", $contents);
             file_put_contents($pemFile, $fixed);
         }
     }
