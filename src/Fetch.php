@@ -81,10 +81,12 @@ class Fetch
             $checkChronicle = (bool) (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
 
-        /** @var int $bundleIndex */
         $bundleIndex = 0;
-        /** @var Bundle $bundle */
-        foreach ($this->listBundles('', $this->trustChannel) as $bundle) {
+        $bundlesAvailable = $this->listBundles('', $this->trustChannel);
+        if (empty($bundlesAvailable)) {
+            throw new BundleException('No bundles were found in the data directory.');
+        }
+        foreach ($bundlesAvailable as $bundle) {
             if ($bundle->hasCustom()) {
                 $validator = $bundle->getValidator();
             } else {
