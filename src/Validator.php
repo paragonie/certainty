@@ -29,7 +29,7 @@ class Validator
     const BACKUP_SIGNING_PUBKEY = 'b1b4ecee6ad36984c319579dc796edcd2e11ed30a1fa0fe8c88e99820cec1550';
 
     // Default Chronicle settings, if none are provided.
-    const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
+    const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.net/chronicle';
     const CHRONICLE_PUBKEY = 'Bgcc1QfkP0UNgMZuHzi0hC1hA1SoVAyUrskmSkzRw3E=';
 
     /**
