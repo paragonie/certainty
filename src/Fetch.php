@@ -73,7 +73,7 @@ class Fetch
      * @throws CertaintyException
      * @throws SodiumException
      */
-    public function getLatestBundle(bool $checkEd25519Signature = null, bool $checkChronicle = null): Bundle
+    public function getLatestBundle(?bool $checkEd25519Signature = null, ?bool $checkChronicle = null): Bundle
     {
         $sodiumCompatIsntSlow = $this->sodiumCompatIsntSlow();
         if (\is_null($checkEd25519Signature)) {

@@ -11,10 +11,10 @@ use SodiumException;
  */
 class Certainty
 {
-    const REPOSITORY = 'paragonie/certainty';
-    const CHRONICLE_CLIENT_ID = 'Chronicle-Client-Key-ID';
-    const ED25519_HEADER = 'Body-Signature-Ed25519';
-    const TRUST_DEFAULT = 'Mozilla';
+    const string REPOSITORY = 'paragonie/certainty';
+    const string CHRONICLE_CLIENT_ID = 'Chronicle-Client-Key-ID';
+    const string ED25519_HEADER = 'Body-Signature-Ed25519';
+    const string TRUST_DEFAULT = 'Mozilla';
 
     /**
      * @param Fetch|null $fetch
@@ -23,7 +23,7 @@ class Certainty
      * @return Client
      * @throws SodiumException
      */
-    public static function getGuzzleClient(Fetch $fetch = null, int $timeout = 5): Client
+    public static function getGuzzleClient(?Fetch $fetch = null, int $timeout = 5): Client
     {
         $options = ['verify' => true];
         if (!\is_null($fetch)) {
