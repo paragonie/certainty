@@ -3,6 +3,7 @@ namespace ParagonIE\Certainty;
 
 use GuzzleHttp\Client;
 use ParagonIE\Certainty\Exception\CertaintyException;
+use SodiumException;
 
 /**
  * Class Certainty
@@ -20,9 +21,9 @@ class Certainty
      * @param int $timeout
      *
      * @return Client
-     * @throws \SodiumException
+     * @throws SodiumException
      */
-    public static function getGuzzleClient(Fetch $fetch = null, $timeout = 5)
+    public static function getGuzzleClient(Fetch $fetch = null, int $timeout = 5): Client
     {
         $options = ['verify' => true];
         if (!\is_null($fetch)) {

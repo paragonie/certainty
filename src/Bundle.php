@@ -17,51 +17,51 @@ class Bundle
     /**
      * @var string $chronicleHash
      */
-    protected $chronicleHash = '';
+    protected string $chronicleHash = '';
 
     /**
-     * @var Validator $customValidator
+     * @var ?Validator $customValidator
      */
-    protected $customValidator;
+    protected ?Validator $customValidator;
 
     /**
      * @var string $filePath
      */
-    protected $filePath = '';
+    protected string $filePath = '';
 
     /**
      * @var string $sha256sum
      */
-    protected $sha256sum = '';
+    protected string $sha256sum = '';
 
     /**
      * @var string $signature
      */
-    protected $signature = '';
+    protected string $signature = '';
 
     /**
      * @var string $trustChannel
      */
-    protected $trustChannel = Certainty::TRUST_DEFAULT;
+    protected string $trustChannel = Certainty::TRUST_DEFAULT;
 
     /**
      * Bundle constructor.
      *
-     * @param string $filePath        Path to the CACert bundle
-     * @param string $sha256sum       Hex-encoded string
-     * @param string $signature       Hex-encoded string
-     * @param string $customValidator Fully-Qualified Class Name
-     * @param string $chronicleHash   Chronicle Hash
-     * @param string $trustChannel    Default trust channel for this bundle
+     * @param string $filePath              Path to the CACert bundle
+     * @param string $sha256sum             Hex-encoded string
+     * @param string $signature             Hex-encoded string
+     * @param class-string $customValidator Fully-Qualified Class Name
+     * @param string $chronicleHash         Chronicle Hash
+     * @param string $trustChannel          Default trust channel for this bundle
      * @throws \TypeError
      */
     public function __construct(
-        $filePath = '',
-        $sha256sum = '',
-        $signature = '',
-        $customValidator = '',
-        $chronicleHash = '',
-        $trustChannel = Certainty::TRUST_DEFAULT
+        string $filePath = '',
+        string $sha256sum = '',
+        string $signature = '',
+        string $customValidator = '',
+        string $chronicleHash = '',
+        string $trustChannel = Certainty::TRUST_DEFAULT
     ) {
         $this->filePath = $filePath;
         $this->sha256sum = $sha256sum;
@@ -92,7 +92,7 @@ class Bundle
      * @return bool
      * @throws CertaintyException
      */
-    public function createSymlink($destination = '', $unlinkIfExists = false)
+    public function createSymlink(string $destination = '', bool $unlinkIfExists = false): bool
     {
         if (\file_exists($destination)) {
             if ($unlinkIfExists) {
@@ -108,7 +108,7 @@ class Bundle
      * @return string
      * @throws CertaintyException
      */
-    public function getFileContents()
+    public function getFileContents(): string
     {
         $contents = \file_get_contents($this->filePath);
         if (!\is_string($contents)) {
@@ -120,7 +120,7 @@ class Bundle
     /**
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         return $this->filePath;
     }
@@ -132,7 +132,7 @@ class Bundle
      * @param bool $raw Return a raw binary string rather than hex-encoded?
      * @return string
      */
-    public function getSha256Sum($raw = false)
+    public function getSha256Sum(bool $raw = false): string
     {
         if ($raw) {
             return Hex::decode($this->sha256sum);
@@ -147,7 +147,7 @@ class Bundle
      * @param bool $raw Return a raw binary string rather than hex-encoded?
      * @return string
      */
-    public function getSignature($raw = false)
+    public function getSignature(bool $raw = false): string
     {
         if ($raw) {
             return Hex::decode($this->signature);
@@ -158,7 +158,7 @@ class Bundle
     /**
      * @return string
      */
-    public function getTrustChannel()
+    public function getTrustChannel(): string
     {
         return $this->trustChannel;
     }
@@ -168,7 +168,7 @@ class Bundle
      *
      * @return string
      */
-    public function getChronicleHash()
+    public function getChronicleHash(): string
     {
         return $this->chronicleHash;
     }
@@ -181,7 +181,7 @@ class Bundle
      *
      * @psalm-suppress DocblockTypeContradiction
      */
-    public function getValidator()
+    public function getValidator(): Validator
     {
         if (!isset($this->customValidator)) {
             throw new CertaintyException('Custom class not defined');
@@ -195,7 +195,7 @@ class Bundle
      *
      * @return bool
      */
-    public function hasCustom()
+    public function hasCustom(): bool
     {
         return !empty($this->customValidator);
     }

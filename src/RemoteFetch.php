@@ -1,11 +1,15 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use DateInterval;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\EncodingException;
 use ParagonIE\Certainty\Exception\NetworkException;
+use SodiumException;
+use TypeError;
 
 /**
  * Class RemoteFetch
@@ -16,24 +20,24 @@ use ParagonIE\Certainty\Exception\NetworkException;
  */
 class RemoteFetch extends Fetch
 {
-    const CHECK_SIGNATURE_BY_DEFAULT = true;
-    const CHECK_CHRONICLE_BY_DEFAULT = true;
-    const DEFAULT_URL = 'https://raw.githubusercontent.com/paragonie/certainty/master/data/';
+    const bool CHECK_SIGNATURE_BY_DEFAULT = true;
+    const bool CHECK_CHRONICLE_BY_DEFAULT = true;
+    const string DEFAULT_URL = 'https://raw.githubusercontent.com/paragonie/certainty/master/data/';
 
     /**
-     * @var \DateInterval $cacheTimeout
+     * @var DateInterval $cacheTimeout
      */
-    protected $cacheTimeout;
+    protected DateInterval $cacheTimeout;
 
     /**
      * @var Client $http
      */
-    protected $http;
+    protected Client $http;
 
     /**
      * @var string $url
      */
-    protected $url = '';
+    protected string $url = '';
 
     /**
      * RemoteFetch constructor.
@@ -41,24 +45,24 @@ class RemoteFetch extends Fetch
      * @param string $dataDir
      * @param string $url
      * @param Client|null $http
-     * @param \DateInterval|string|null $timeout
+     * @param DateInterval|string|null $timeout
      * @param string $chronicleUrl
      * @param string $chroniclePublicKey
      * @param int $connectTimeout
      *
      * @throws CertaintyException
-     * @throws \SodiumException
-     * @throws \TypeError
+     * @throws SodiumException
+     * @throws TypeError
      * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function __construct(
         $dataDir = '',
-        $url = self::DEFAULT_URL,
-        Client $http = null,
-        $timeout = null,
-        $chronicleUrl = '',
-        $chroniclePublicKey = '',
-        $connectTimeout = 5
+        string $url = self::DEFAULT_URL,
+        ?Client $http = null,
+        DateInterval|string|null $timeout = null,
+        string $chronicleUrl = '',
+        string $chroniclePublicKey = '',
+        int $connectTimeout = 5
     ) {
         parent::__construct($dataDir);
         $this->url = $url;
@@ -76,22 +80,21 @@ class RemoteFetch extends Fetch
         if (\is_null($timeout)) {
             /* Default: 24 hours */
             try {
-                $timeoutObj = new \DateInterval('P01D');
+                $timeoutObj = new DateInterval('P01D');
             } catch (\Exception $ex) {
                 throw new CertaintyException('Invalid DateInterval', 0, $ex);
             }
         } elseif (\is_string($timeout)) {
             try {
-                $timeoutObj = new \DateInterval($timeout);
+                $timeoutObj = new DateInterval($timeout);
             } catch (\Exception $ex) {
                 throw new CertaintyException('Invalid DateInterval', 0, $ex);
             }
-        } elseif ($timeout instanceof \DateInterval) {
+        } elseif ($timeout instanceof DateInterval) {
             $timeoutObj = $timeout;
         } else {
-            throw new \TypeError('Invalid timeout. Expected a DateInterval or string.');
+            throw new TypeError('Invalid timeout. Expected a DateInterval or string.');
         }
-        /** @var \DateInterval $timeoutObj */
         $this->cacheTimeout = $timeoutObj;
         if (isset($chronicleUrl, $chroniclePublicKey)) {
             $this->setChronicle($chronicleUrl, $chroniclePublicKey);
@@ -103,7 +106,7 @@ class RemoteFetch extends Fetch
      *
      * @return bool
      */
-    public function cacheExpired()
+    public function cacheExpired(): bool
     {
         if (!\file_exists($this->dataDirectory . '/ca-certs.cache')) {
             return true;
@@ -132,7 +135,7 @@ class RemoteFetch extends Fetch
     protected function listBundles(
         $customValidator = '',
         $trustChannel = Certainty::TRUST_DEFAULT
-    ) {
+    ): array {
         if ($this->cacheExpired()) {
             if (!$this->remoteFetchBundles()) {
                 throw new NetworkException('Could not download bundles');
@@ -146,12 +149,11 @@ class RemoteFetch extends Fetch
      *
      * @return bool
      * @throws EncodingException
+     * @throws GuzzleException
      */
-    protected function remoteFetchBundles()
+    protected function remoteFetchBundles(): bool
     {
-        /** @var Request $request */
         $request = $this->http->get($this->url . '/ca-certs.json');
-        /** @var string $body */
         $body = (string) $request->getBody();
         /** @var array|bool $jsonDecoded */
         $jsonDecoded = \json_decode($body, true);
@@ -198,10 +200,10 @@ class RemoteFetch extends Fetch
     }
 
     /**
-     * @param \DateInterval $interval
-     * @return self
+     * @param DateInterval $interval
+     * @return static
      */
-    public function setCacheTimeout(\DateInterval $interval)
+    public function setCacheTimeout(DateInterval $interval): static
     {
         $this->cacheTimeout = $interval;
         return $this;
@@ -211,9 +213,9 @@ class RemoteFetch extends Fetch
      * Replace the HTTP client with a new one.
      *
      * @param Client $client
-     * @return $this
+     * @return static
      */
-    public function setHttpClient(Client $client)
+    public function setHttpClient(Client $client): static
     {
         $this->http = $client;
         return $this;
@@ -222,9 +224,9 @@ class RemoteFetch extends Fetch
     /**
      *
      * @param string $url
-     * @return self
+     * @return static
      */
-    public function setRemoteSource($url = '')
+    public function setRemoteSource($url = ''): static
     {
         $this->url = $url;
         return $this;

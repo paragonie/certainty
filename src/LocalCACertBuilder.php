@@ -21,52 +21,52 @@ class LocalCACertBuilder extends Bundle
     /**
      * @var string $chronicleClientId
      */
-    protected $chronicleClientId = '';
+    protected string $chronicleClientId = '';
 
     /**
      * @var string $chroniclePublicKey
      */
-    protected $chroniclePublicKey = '';
+    protected string $chroniclePublicKey = '';
 
     /**
      * @var string $chronicleRepoName
      */
-    protected $chronicleRepoName = 'paragonie/certainty';
+    protected string $chronicleRepoName = 'paragonie/certainty';
 
     /**
      * @var string $chronicleUrl
      */
-    protected $chronicleUrl = '';
+    protected string $chronicleUrl = '';
 
     /**
      * @var string $contents
      */
-    protected $contents = '';
+    protected string $contents = '';
 
     /**
      * @var string $original
      */
-    protected $original = '';
+    protected string $original = '';
 
     /**
      * @var string $outputPem
      */
-    protected $outputPem = '';
+    protected string $outputPem = '';
 
     /**
      * @var string $outputJson
      */
-    protected $outputJson = '';
+    protected string $outputJson = '';
 
     /**
      * @var string $secretKey
      */
-    protected $secretKey = '';
+    protected string $secretKey = '';
 
     /**
      * @var string $trustChannel
      */
-    protected $trustChannel = Certainty::TRUST_DEFAULT;
+    protected string $trustChannel = Certainty::TRUST_DEFAULT;
 
     /**
      * @param Bundle $old

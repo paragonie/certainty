@@ -17,7 +17,7 @@ class Composer
      * @return void
      * @psalm-suppress UnresolvableInclude
      */
-    public static function postAutoloadDump(Event $event)
+    public static function postAutoloadDump(Event $event): void
     {
         if (\getenv('TRAVIS')) {
             // GnuTLS error
@@ -41,7 +41,7 @@ class Composer
      * @param string $dataDir
      * @return void
      */
-    public static function dos2unixAll($dataDir)
+    public static function dos2unixAll(string $dataDir): void
     {
         foreach (glob($dataDir . '/*.pem') as $pemFile) {
             $contents = file_get_contents($pemFile);

@@ -1,8 +1,10 @@
 <?php
 namespace ParagonIE\Certainty;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use ParagonIE\Certainty\Exception\CertaintyException;
 use ParagonIE\Certainty\Exception\CryptoException;
@@ -12,6 +14,7 @@ use ParagonIE\Certainty\Exception\RemoteException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use ParagonIE\ConstantTime\Hex;
 use ParagonIE_Sodium_Core_Util as SodiumUtil;
+use SodiumException;
 
 /**
  * Class Validator
@@ -20,27 +23,27 @@ use ParagonIE_Sodium_Core_Util as SodiumUtil;
 class Validator
 {
     // Set this to true to not throw exceptions
-    const THROW_MORE_EXCEPTIONS = false;
+    const bool THROW_MORE_EXCEPTIONS = false;
 
     /**
      * Ed25519 public keys. These are hard-coded for the class, but can be changed in inherited classes.
      */
-    const PRIMARY_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
-    const BACKUP_SIGNING_PUBKEY = 'b1b4ecee6ad36984c319579dc796edcd2e11ed30a1fa0fe8c88e99820cec1550';
+    const string PRIMARY_SIGNING_PUBKEY = '1cb438a66110689f1192b511a88030f02049c40d196dc1844f9e752531fdd195';
+    const string BACKUP_SIGNING_PUBKEY = 'b1b4ecee6ad36984c319579dc796edcd2e11ed30a1fa0fe8c88e99820cec1550';
 
     // Default Chronicle settings, if none are provided.
-    const CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
-    const CHRONICLE_PUBKEY = 'Bgcc1QfkP0UNgMZuHzi0hC1hA1SoVAyUrskmSkzRw3E=';
+    const string CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
+    const string CHRONICLE_PUBKEY = 'Bgcc1QfkP0UNgMZuHzi0hC1hA1SoVAyUrskmSkzRw3E=';
 
     /**
      * @var string $chronicleUrl
      */
-    protected $chronicleUrl = '';
+    protected string $chronicleUrl = '';
 
     /**
      * @var string $chroniclePublicKey
      */
-    protected $chroniclePublicKey = '';
+    protected string $chroniclePublicKey = '';
 
     /**
      * Validator constructor.
@@ -48,7 +51,7 @@ class Validator
      * @param string $chronicleUrl
      * @param string $chroniclePublicKey
      */
-    public function __construct($chronicleUrl = '', $chroniclePublicKey = '')
+    public function __construct(string $chronicleUrl = '', string $chroniclePublicKey = '')
     {
         if (!$chronicleUrl) {
             $chronicleUrl = (string) static::CHRONICLE_URL;
@@ -66,12 +69,12 @@ class Validator
      * @param Bundle $bundle
      * @return bool
      */
-    public static function checkSha256Sum(Bundle $bundle)
+    public static function checkSha256Sum(Bundle $bundle): bool
     {
         $sha256sum = \hash_file('sha256', $bundle->getFilePath(), true);
         try {
             return SodiumUtil::hashEquals($bundle->getSha256Sum(true), $sha256sum);
-        } catch (\SodiumException $ex) {
+        } catch (SodiumException $ex) {
             return false;
         }
     }
@@ -82,9 +85,9 @@ class Validator
      * @param Bundle $bundle  Which bundle to validate
      * @param bool $backupKey Use the backup key? (Only if the primary is compromised.)
      * @return bool
-     * @throws \SodiumException
+     * @throws SodiumException
      */
-    public function checkEd25519Signature(Bundle $bundle, $backupKey = false)
+    public function checkEd25519Signature(Bundle $bundle, bool $backupKey = false): bool
     {
         /** @var string $publicKey */
         if ($backupKey) {
@@ -116,12 +119,14 @@ class Validator
      *
      * @param Bundle $bundle
      * @return bool
-     * @throws \Exception
+     *
+     * @throws Exception
      * @throws ConnectException
      * @throws EncodingException
      * @throws RemoteException
+     * @throws GuzzleException
      */
-    public function checkChronicleHash(Bundle $bundle)
+    public function checkChronicleHash(Bundle $bundle): bool
     {
         if (empty($this->chronicleUrl) && empty($this->chroniclePublicKey)) {
             // Custom validator has opted to fail open here. Who are we to dissent?
@@ -186,7 +191,7 @@ class Validator
         // If the status was successful,
         try {
             $ok = SodiumUtil::hashEquals('OK', $jsonStatus);
-        } catch (\SodiumException $ex) {
+        } catch (SodiumException $ex) {
             $ok = false;
         }
         if (!$ok) {
@@ -220,9 +225,9 @@ class Validator
      * @return bool
      * @throws CryptoException
      * @throws InvalidResponseException
-     * @throws \SodiumException
+     * @throws SodiumException
      */
-    protected static function validateChronicleContents(Bundle $bundle, array $result = [])
+    protected static function validateChronicleContents(Bundle $bundle, array $result = []): bool
     {
         if (!isset($result['signature'], $result['contents'], $result['publickey'])) {
             if (static::THROW_MORE_EXCEPTIONS) {
