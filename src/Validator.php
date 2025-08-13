@@ -32,7 +32,7 @@ class Validator
     const string BACKUP_SIGNING_PUBKEY = 'b1b4ecee6ad36984c319579dc796edcd2e11ed30a1fa0fe8c88e99820cec1550';
 
     // Default Chronicle settings, if none are provided.
-    const string CHRONICLE_URL = 'https://php-chronicle.pie-hosted.com/chronicle';
+    const string CHRONICLE_URL = 'https://php-chronicle.pie-hosted.net/chronicle';
     const string CHRONICLE_PUBKEY = 'Bgcc1QfkP0UNgMZuHzi0hC1hA1SoVAyUrskmSkzRw3E=';
 
     /**
@@ -74,7 +74,7 @@ class Validator
         $sha256sum = \hash_file('sha256', $bundle->getFilePath(), true);
         try {
             return SodiumUtil::hashEquals($bundle->getSha256Sum(true), $sha256sum);
-        } catch (SodiumException $ex) {
+        } catch (SodiumException) {
             return false;
         }
     }
@@ -270,7 +270,7 @@ class Validator
         }
 
         // Lazy evaluation: SHA256 hash not present?
-        if (\strpos($result['contents'], $bundle->getSha256Sum()) === false) {
+        if (!str_contains($result['contents'], $bundle->getSha256Sum())) {
             if (static::THROW_MORE_EXCEPTIONS) {
                 throw new InvalidResponseException('SHA256 hash not present in response body');
             }
@@ -278,10 +278,10 @@ class Validator
         }
 
         // Lazy evaluation: Repository name not fouind?
-        if (\strpos($result['contents'], Certainty::REPOSITORY) === false) {
+        if (!str_contains($result['contents'], Certainty::REPOSITORY)) {
             /** @var string $altRepoName */
             $altRepoName = \json_encode(Certainty::REPOSITORY);
-            if (\strpos($result['contents'], $altRepoName) === false) {
+            if (!str_contains($result['contents'], $altRepoName)) {
                 if (static::THROW_MORE_EXCEPTIONS) {
                     throw new InvalidResponseException('Repository name not present in response body');
                 }
