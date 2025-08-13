@@ -1,10 +1,13 @@
 <?php
 namespace ParagonIE\Certainty;
 
-use ParagonIE\Certainty\Exception\BundleException;
-use ParagonIE\Certainty\Exception\CertaintyException;
-use ParagonIE\Certainty\Exception\EncodingException;
-use ParagonIE\Certainty\Exception\FilesystemException;
+use ParagonIE\Certainty\Exception\{
+    BundleException,
+    CertaintyException,
+    EncodingException,
+    FilesystemException
+};
+use SodiumException;
 
 /**
  * Class Fetch
@@ -12,34 +15,34 @@ use ParagonIE\Certainty\Exception\FilesystemException;
  */
 class Fetch
 {
-    const CHECK_SIGNATURE_BY_DEFAULT = false;
-    const CHECK_CHRONICLE_BY_DEFAULT = false;
+    const bool CHECK_SIGNATURE_BY_DEFAULT = false;
+    const bool CHECK_CHRONICLE_BY_DEFAULT = false;
 
     /**
      * @var string $dataDirectory
      */
-    protected $dataDirectory = '';
+    protected string $dataDirectory = '';
 
     /**
      * @var string $trustChannel
      */
-    protected $trustChannel = Certainty::TRUST_DEFAULT;
+    protected string $trustChannel = Certainty::TRUST_DEFAULT;
 
     /**
      * @var string $chronicleUrl
      */
-    protected $chronicleUrl = '';
+    protected string $chronicleUrl = '';
 
     /**
      * @var string $chroniclePublicKey
      */
-    protected $chroniclePublicKey = '';
+    protected string $chroniclePublicKey = '';
 
     /**
      * List of bundles that have just been downloaded (e.g. RemoteFetch)
      * @var array<int, string> $unverified
      */
-    protected $unverified = [];
+    protected array $unverified = [];
 
     /**
      * Fetch constructor.
@@ -50,7 +53,7 @@ class Fetch
      *
      * @throws CertaintyException
      */
-    public function __construct($dataDir)
+    public function __construct(string $dataDir)
     {
         if (!\is_readable($dataDir)) {
             throw new FilesystemException('Directory is not readable: ' . $dataDir);
@@ -68,17 +71,17 @@ class Fetch
      * @return Bundle
      *
      * @throws CertaintyException
-     * @throws \SodiumException
+     * @throws SodiumException
      */
-    public function getLatestBundle($checkEd25519Signature = null, $checkChronicle = null)
+    public function getLatestBundle(bool $checkEd25519Signature = null, bool $checkChronicle = null): Bundle
     {
         $sodiumCompatIsntSlow = $this->sodiumCompatIsntSlow();
         if (\is_null($checkEd25519Signature)) {
-            $checkEd25519Signature = (bool) (static::CHECK_SIGNATURE_BY_DEFAULT && $sodiumCompatIsntSlow);
+            $checkEd25519Signature = (static::CHECK_SIGNATURE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
         $conditionalChronicle = \is_null($checkChronicle);
         if ($conditionalChronicle) {
-            $checkChronicle = (bool) (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
+            $checkChronicle = (static::CHECK_CHRONICLE_BY_DEFAULT && $sodiumCompatIsntSlow);
         }
 
         $bundleIndex = 0;
@@ -129,16 +132,16 @@ class Fetch
     }
 
     /**
-     * Get an array of all of the Bundles, ordered most-recent to oldest.
+     * Get an array of all the Bundles, ordered most-recent to oldest.
      *
      * No validation is performed automatically.
      *
-     * @param string $customValidator Fully-qualified class name for Validator
+     * @param class-string $customValidator Fully-qualified class name for Validator
      * @return array<int, Bundle>
      *
      * @throws CertaintyException
      */
-    public function getAllBundles($customValidator = '')
+    public function getAllBundles(string $customValidator = ''): array
     {
         return \array_values(
             $this->listBundles(
@@ -153,7 +156,7 @@ class Fetch
      * @param string $publicKey
      * @return self
      */
-    public function setChronicle($url, $publicKey)
+    public function setChronicle(string $url, string $publicKey): static
     {
         $this->chronicleUrl = $url;
         $this->chroniclePublicKey = $publicKey;
@@ -167,7 +170,7 @@ class Fetch
      * @throws EncodingException
      * @throws FilesystemException
      */
-    protected function markBundleAsBad($index = 0, $reason = '')
+    protected function markBundleAsBad(int $index = 0, string $reason = ''): void
     {
         /** @var array<int, array<string, string>> $data */
         $data = $this->loadCaCertsFile();
@@ -184,7 +187,7 @@ class Fetch
      * @throws EncodingException
      * @throws FilesystemException
      */
-    protected function loadCaCertsFile()
+    protected function loadCaCertsFile(): array
     {
         if (!\file_exists($this->dataDirectory . '/ca-certs.json')) {
             throw new FilesystemException('ca-certs.json not found in data directory.');
@@ -214,9 +217,9 @@ class Fetch
      * @throws CertaintyException
      */
     protected function listBundles(
-        $customValidator = '',
-        $trustChannel = Certainty::TRUST_DEFAULT
-    ) {
+        string $customValidator = '',
+        string $trustChannel = Certainty::TRUST_DEFAULT
+    ): array {
         $data = $this->loadCaCertsFile();
         $bundles = [];
         /** @var array<string, string> $row */
@@ -259,7 +262,7 @@ class Fetch
      *
      * @psalm-suppress RedundantCondition PHP_INT_SIZE is env-specific
      */
-    protected function sodiumCompatIsntSlow()
+    protected function sodiumCompatIsntSlow(): bool
     {
         if (\extension_loaded('sodium')) {
             return true;
