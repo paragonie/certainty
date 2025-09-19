@@ -53,7 +53,7 @@ source projects do this.
 From Composer:
 
 ```bash
-composer require paragonie/certainty:^2
+composer require paragonie/certainty:^3
 ```
 
 Certainty will keep certificates up to date via `RemoteFetch`, so you don't need to update
